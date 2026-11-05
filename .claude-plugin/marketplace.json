@@ -1,0 +1,27 @@
+{
+  "name": "foresdd",
+  "owner": {
+    "name": "Bohdan Lisovskyi",
+    "email": "www.lbohdan@gmail.com",
+    "url": "https://github.com/bohdanlisovskyi"
+  },
+  "metadata": {
+    "description": "Marketplace for foresdd, a Spec-Driven Development (SDD) workflow for Claude Code.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "foresdd",
+      "source": "./",
+      "version": "0.1.0",
+      "description": "Spec-Driven Development (SDD) workflow skills and agents for Claude Code.",
+      "category": "workflow",
+      "tags": [
+        "sdd",
+        "spec-driven-development",
+        "specification",
+        "workflow"
+      ]
+    }
+  ]
+}

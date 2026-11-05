@@ -1,0 +1,19 @@
+{
+  "name": "foresdd",
+  "version": "0.1.0",
+  "description": "Spec-Driven Development (SDD) workflow skills and agents for Claude Code.",
+  "author": {
+    "name": "Bohdan Lisovskyi",
+    "email": "www.lbohdan@gmail.com",
+    "url": "https://github.com/bohdanlisovskyi"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/bohdanlisovskyi/foresdd",
+  "repository": "https://github.com/bohdanlisovskyi/foresdd.git",
+  "keywords": [
+    "sdd",
+    "spec-driven-development",
+    "specification",
+    "workflow"
+  ]
+}
