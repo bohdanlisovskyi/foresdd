@@ -228,6 +228,45 @@ has a comment explaining it, and `/foresdd:config` keeps your comments and any u
 
 ## How to run (first run)
 
+The flow is a straight line: **each stage writes a file the next one reads**, and refuses to run if
+its input is missing, so you can't skip ahead by accident. The argument every feature stage takes is
+a kebab-case **feature slug** you make up once (here `checkout-discounts`). It becomes
+`docs/features/checkout-discounts/`, so use the same slug at every stage.
+
+```text
+# ── once per repo ──────────────────────────────────────────────────────────────────────────
+/foresdd:survey                                # map the current architecture → docs/architecture-map.md
+/foresdd:scaffold                              # empty repo only: build the skeleton from survey's ADRs
+/foresdd:config                                # optional: review / tune settings
+/foresdd:design-system                         # optional, UI repos: design tool + component inventory
+
+# ── idea (optional) ────────────────────────────────────────────────────────────────────────
+/foresdd:interview      checkout-discounts     # pressure-test a raw idea → docs/idea-brief.md
+/foresdd:roadmap                               # decompose into sized steps + parallel waves
+
+# ── per feature ────────────────────────────────────────────────────────────────────────────
+/foresdd:specify        checkout-discounts     # interview → spec (reads the architecture map)
+/foresdd:clarify        checkout-discounts     # optional: ambiguity sweep
+/foresdd:ux-flows       checkout-discounts     # UI features only: user flows + screen inventory
+/foresdd:design         checkout-discounts     # sad.md + ADRs
+/foresdd:sequences      checkout-discounts     # optional: multi-step runtime flows
+/foresdd:data-model     checkout-discounts     # optional: schema changes + migrations
+/foresdd:api            checkout-discounts     # optional: new/changed endpoints, events → openapi.yaml
+/foresdd:screens        checkout-discounts     # UI features only: the per-state screen manifest
+/foresdd:tasks          checkout-discounts     # tasks.json
+/foresdd:plan-tests     checkout-discounts     # test-plan.md (inline in spec.md for XS/S)
+/foresdd:implement      checkout-discounts     # TDD per task
+/foresdd:review         checkout-discounts     # independent review of the whole change
+/foresdd:fix            checkout-discounts     # on CHANGES REQUESTED: fix a finding, then review again
+/foresdd:ship           checkout-discounts     # verify it runs, changelog, PR
+
+# ── utilities (any time) ───────────────────────────────────────────────────────────────────
+/foresdd:fix            checkout-discounts <symptom>   # bug: failing test → fix → spec patch
+/foresdd:tshirt-size    checkout-discounts             # re-size or re-route a feature
+/foresdd:decide-adr     checkout-discounts <title>     # record a decision made outside design
+/foresdd:glossary       <term>                         # domain terms in CONTEXT.md
+```
+
 Run these once per repository. Then follow the [recipe](#new-backend-feature) that matches your task.
 
 **1. Map the repository.**
