@@ -1,0 +1,19 @@
+/foresdd:design-system
+
+Headless eval run — there is NO interactive user; never call AskUserQuestion. There is no
+docs/design-system.md and no docs/architecture-map.md yet; the repo is a small React + Vite UI.
+
+The answers to the skill's one question set are given here in advance:
+- (a) tool: code — markdown wireframes in screens.md; do NOT use or probe-write any Figma or
+  Pencil MCP, and create no .pen file.
+- (b) platform posture: desktop-first — bookkeepers use it at a desk on laptop/desktop screens.
+- (c) token source: src/styles/tokens.css (the CSS custom properties found in the code).
+
+For anything else the protocol would normally confirm (e.g. an interaction convention the code
+does not show), decide the reversible option yourself and mark it as assumed. The UI feature the
+team will start next is `invoice-export` (no feature folder exists yet) — use that slug in the
+handoff's Run next.
+
+Follow the skill's protocol exactly: scan the code side, write docs/design-system.md from the
+template section by section, run the structural self-check, commit, and finish by printing the
+stage-handoff block.

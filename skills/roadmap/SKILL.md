@@ -10,7 +10,7 @@ description: >
   which decisions are still open and who owns them), the dependency graph that owns every edge,
   and the execution path: dependency-respecting waves that show what can run in parallel (e.g. in
   worktrees) and what must wait. Triggers on "roadmap", "break this down", "decompose the idea",
-  "what depends on what", "execution plan", "/sdd:roadmap". Takes any scope — a whole product, an
+  "what depends on what", "execution plan", "/foresdd:roadmap". Takes any scope — a whole product, an
   epic, or a single feature. Reads docs/idea-brief.md or a PRD (+ design canon and architecture
   map when they exist; neither is required). It decomposes and orders — it is NOT a prioritization
   scorecard and NOT a dated Gantt; specify/ship keep step statuses in sync as features move.
@@ -34,7 +34,7 @@ Five load-bearing properties, in priority order:
 1. **A destination** — one sentence for what is true once the last step ships. Without it the
    steps are a list of work with nothing to be a decomposition *of*.
 2. **Steps** — the idea decomposed into incremental, source-anchored slices (each row cites the
-   brief/PRD section it comes from; size XS–XL per [`../allocations/size-matrix.md`](../allocations/size-matrix.md)).
+   brief/PRD section it comes from; size XS–XL per [`../allocations/tshirt-sizing.md`](../allocations/tshirt-sizing.md)).
 3. **A word for what you don't know yet.** `Size` is `XS…XL` **or** `fog`, in the same cell,
    because they answer the same question and only one of them can be true: sizing something nobody
    has formulated yet is how an estimate becomes a lie. Fog lives in `## Not yet specified` until a
@@ -69,16 +69,21 @@ Whoever owns product direction (PM / lead / the solo maintainer).
    absent, create it now from the canonical template — documented defaults + the self-documenting
    body — and patch `.gitignore`; if it exists, read it and never overwrite. The one procedure
    lives in [`../allocations/settings-file.md`](../allocations/settings-file.md). Creating is
-   unconditional; **changing values is only ever offered by [`config`](../config/SKILL.md)**. Say
-   one line: «`.claude/sdd.local.md` created with documented defaults — `/sdd:config` to tune it».
+   unconditional; **changing values is only ever offered by [`config`](../config/SKILL.md)**. Say the
+   one-line creation notice from the canon (only when the file was just created).
    **Then locate sources.** Find the idea source (`docs/idea-brief.md` first, then PRD candidates).
    None found → say so and STOP: a roadmap without a source is fiction, and the fix is one
-   command — `/sdd:interview` writes that brief. **That is the only hard stop.**
+   command — `/foresdd:interview` writes that brief. **That is the only hard stop.** Emit it as the
+   blocked handoff, never a bare refusal, and make the next step cheap: when the user **already
+   described the idea in this conversation**, say that `interview` will take those words as the
+   raw idea (brief §1, verbatim) so nothing needs retyping, and that a well-formed idea usually
+   needs only a few questions there — then come back to `/foresdd:roadmap`. A pasted idea is
+   never anchored to directly: source anchors must resolve to a file the self-check can grep.
 
    `docs/architecture-map.md` is **optional and never a gate**. Present → its module inventory
    supplies the zones in `## Execution path`. Absent → the roadmap is written anyway, every zone
    that is not an existing path is marked `(new)`, and the handoff says plainly that the waves are
-   a first cut worth re-cutting after `/sdd:survey` fills the map. A missing map degrades one
+   a first cut worth re-cutting after `/foresdd:survey` fills the map. A missing map degrades one
    column; it does not block the decomposition.
 
    **Greenfield (`docs/architecture-map.md` says `mode: greenfield-bootstrap`, or an empty repo with no `docs/features/*` besides `_scaffold/`): the first step is `scaffold`** — unless its `scaffold: materialize skeleton` commit already exists, then it is marked done. Every
@@ -88,7 +93,7 @@ Whoever owns product direction (PM / lead / the solo maintainer).
    project has to exist before anything in the brief can be built).
 
    If `docs/roadmap.md` exists, this run **updates** it (statuses, new steps, re-waving) — never
-   silently rebuilds. A file written before 2.2 carries a `Depends on` column the template no
+   silently rebuilds. A file in the older layout carries a `Depends on` column the template no
    longer has; this run folds it away — the edges it held move into the dependency graph, which
    is now the one place edges live. Say so in the handoff, so the dropped column reads as a
    migration rather than lost data.
@@ -107,13 +112,14 @@ Whoever owns product direction (PM / lead / the solo maintainer).
       defend in one line. Edges live in `## Dependency graph` and nowhere else — a step with no
       real blocker has no edge, and inflated dependencies serialize work that could run in parallel.
    4. **Fog is a size value, not a second column.** Ask the Pocock test of each step: *can you
-      state the question precisely right now?* — not «can you answer it». No → the step's `Size`
+      state the question precisely right now?* — not «can you answer it». (With the owner, ask
+      the plain question, not the test's name.) No → the step's `Size`
       cell reads `fog`, and the substance goes to `## Not yet specified` as **one area**. Because
       fog and XS–XL share one cell, «the unformulated thing got sized anyway» stops being possible
       to write down. Do NOT pre-chop fog into ticket-sized pieces; that's inventing structure for
       something you haven't looked at yet.
    5. **Size, don't score.** Size every non-fog step XS–XL per
-      [`../allocations/size-matrix.md`](../allocations/size-matrix.md). No RICE, no priority numbers, no
+      [`../allocations/tshirt-sizing.md`](../allocations/tshirt-sizing.md). No RICE, no priority numbers, no
       dates — order IS the prioritization.
    6. **Existing state is respected.** A step whose `docs/features/<slug>/` already exists keeps
       its real status (spec'd / building / shipped); never re-plan shipped work.
@@ -127,8 +133,8 @@ Whoever owns product direction (PM / lead / the solo maintainer).
    live», «what format does the exporter emit», «is there already a library for this», «do steps 3
    and 5 actually touch the same file») are AFK work, and today nobody does them: they get guessed
    at, and the guess becomes a dependency edge.
-   For each such question, spawn one subagent — `subagent_type: "general-purpose"` (or the host's
-   equivalent per [`../allocations/tool-adapters.md`](../allocations/tool-adapters.md)), tools **Read,
+   For each such question, spawn one subagent — `subagent_type: "general-purpose"` (or inline when
+   subagents are unavailable, per [`../allocations/fallbacks.md`](../allocations/fallbacks.md)), tools **Read,
    Grep, Glob, Bash, WebSearch, WebFetch** — **all in one message so they run concurrently**, one
    agent per question. Wrap each with the worker preamble from
    [`../allocations/agent-roster.md`](../allocations/agent-roster.md) and demand a fixed shape back:
@@ -140,23 +146,29 @@ Whoever owns product direction (PM / lead / the solo maintainer).
    the mermaid goes to the file, never dumped raw to the terminal — same rule as `design`), calling
    each step by its name rather than its id. Then **one `AskUserQuestion` call**: (a) steps to
    merge/split/drop (multiSelect over flagged candidates + the questions step 3 could not close),
-   (b) confirm the wave layout or name what must move. Apply — **writing as you go**: copy
+   (b) confirm the wave layout or name what must move, and — **only when the draft already has no
+   fog and no open decisions** — (c) the step-5 keep-or-skip choice, asked now so nothing is
+   written and then deleted. Apply — **writing as you go**: copy
    [`./templates/roadmap.md`](./templates/roadmap.md) to `docs/roadmap.md` (an existing roadmap is
    edited in place, never re-bootstrapped) with the destination, then write each step row, edge and
    wave **as soon as the owner's answer settles it**, never the whole file at the end
    ([`../allocations/write-and-commit.md`](../allocations/write-and-commit.md) §1).
 
-5. **Ask whether the file is worth keeping.** If the pass surfaced **no fog** — every step is
+5. **Ask whether the file is worth keeping** (skip if step 4's (c) already answered it). If the
+   pass surfaced **no fog** — every step is
    sized, `## Not yet specified` is empty, `## Open decisions` is empty — then say so and put the
    choice to the owner: a three-row file restating an already-clear plan is one more thing to keep
-   current, and the alternative is to build straight from `/sdd:specify <slug>`. **It is their
+   current, and the alternative is to build straight from `/foresdd:specify <slug>`. **It is their
    call, not a stop.** They want the file as a shared reference — write it. Say the tradeoff once,
    plainly, and take the answer; never refuse to write a roadmap because the request was small or
    clear. They decline → delete the `docs/roadmap.md` **this run created** (never a pre-existing
-   one), commit nothing, and hand off straight to `/sdd:specify <slug>`.
+   one), commit nothing, and hand off straight to `/foresdd:specify <slug>`.
 
 6. **Complete.** Fill what is still placeholder in `docs/roadmap.md` (fog vocabulary, decisions so
-   far, the mermaid graph); set `updated_at`.
+   far, the mermaid graph); set `updated_at`. **Validate the dependency `flowchart` per
+   [`../allocations/mermaid-check.md`](../allocations/mermaid-check.md)** (the structural lint
+   script, plus a full `mmdc` parse when installed; fix before the self-check — never commit a
+   graph that doesn't parse).
 
 7. **Structural self-check** — per [`../allocations/self-check.md`](../allocations/self-check.md), re-read
    from disk, verify **6 items**:
@@ -186,14 +198,20 @@ Whoever owns product direction (PM / lead / the solo maintainer).
    `roadmap: roadmap.md <what changed>`; an unresolved self-check item → no commit. **Invoked
    in-flow** (a `specify` / `implement` / `ship` sync hook below) → don't commit here: the caller
    commits `docs/roadmap.md` as its own document, after its own self-check, under its own message.
-   Then emit the **stage-handoff block** per [`../allocations/handoff.md`](../allocations/handoff.md)
+   Then emit the **stage-handoff block** per [`../allocations/handover.md`](../allocations/handover.md)
    (utility variant) — *What I did*
    (incl. «self-check: 6/6 pass», the fog count and the commit SHA) + *Review* (`docs/roadmap.md`) + *Run next*:
    **name the first unblocked step the way the file names it, then give the command on its own
-   line, ready to run** — `/sdd:specify <slug>` for that step, `/sdd:scaffold` when the first step
+   line, ready to run** — `/foresdd:specify <slug>` for that step, `/foresdd:scaffold` when the first step
    is the greenfield skeleton, or a recon pass on the top `## Not yet specified` area when the
-   first thing in the way is fog rather than work. When the run had no architecture map, add one
-   line: the zones are unverified, `/sdd:survey` then a re-run re-cuts the waves.
+   first thing in the way is fog rather than work — **as a runnable command, never the bare word
+   «recon»**: `/foresdd:interview <area-slug>` when the owner still has to formulate the question
+   (the usual fog case — it refines the existing project brief rather than starting a second one;
+   a `prototype`-type area gets the one-line build-to-learn action instead of a command), or
+   `/foresdd:specify <slug>` when the question can now be stated and
+   specifying is what clears it (the specify sync hook trades `fog` for a size). When the run had
+   no architecture map, add one line: the zones are unverified, `/foresdd:survey` then a re-run
+   re-cuts the waves.
 
 ## Sync hooks (delivery keeps it current — anti-drift)
 
@@ -244,6 +262,6 @@ Whoever owns product direction (PM / lead / the solo maintainer).
 ## References & template
 
 - [`./templates/roadmap.md`](./templates/roadmap.md) — the decomposition scaffold.
-- [`../allocations/size-matrix.md`](../allocations/size-matrix.md) — XS–XL sizing heuristics.
+- [`../allocations/tshirt-sizing.md`](../allocations/tshirt-sizing.md) — XS–XL sizing heuristics.
 - [`../allocations/agent-roster.md`](../allocations/agent-roster.md) — the shared contract every fanned-out
   question-closer follows.

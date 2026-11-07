@@ -112,12 +112,11 @@ C4Container
 
 ## Validating before commit
 
-```bash
-# Optional pre-commit check — extracts the Mermaid block and runs the CLI parser.
-npx -y @mermaid-js/mermaid-cli@latest -i <(awk '/^```mermaid$/,/^```$/' docs/features/<slug>/sad.md) -o /tmp/out.svg
-```
+Validate per [`../../allocations/mermaid-check.md`](../../allocations/mermaid-check.md) — the
+structural lint script (which also catches the C4 typos and undeclared-`Rel` mistakes above) plus a
+full `mmdc` parse when it is installed. Don't keep a separate recipe here.
 
-In practice: open `sad.md` in Obsidian or push to GitHub and inspect the render — both fail loudly on syntax errors.
+Opening `sad.md` in Obsidian or on GitHub is a useful eyeball check, but not a validator: a misspelled boundary renders as a silently empty box there, with no error.
 
 ## When the diagram doesn't fit
 

@@ -1,0 +1,11 @@
+/foresdd:screens saved-searches --depth=easy
+
+Headless eval run — there is NO interactive user; never call AskUserQuestion. The design canon
+(docs/design-system.md, tool: code) and the feature's spec, sad.md, ux-flows.md and contract are
+committed in the fixture. For anything the confirm step would normally ask, decide the reversible
+option yourself and record it in the assumptions ledger.
+
+Follow the skill's protocol exactly: derive every screen's states from the ACs, the sad.md §6
+branches and the contract errors, pick components from the design-system inventory, draw the
+inline wireframes, run the structural self-check, commit, and finish by printing the stage-handoff
+block.

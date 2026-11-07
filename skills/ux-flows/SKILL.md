@@ -8,7 +8,7 @@ description: >
   flowchart per UI-touching §4 user story (happy + alt/error branches from §5 ACs), a screen
   inventory (SCR-NN ids), and an AC→flow map, written to docs/features/{slug}/ux-flows.md.
   Triggers on "ux flows for {slug}", "user flows for {slug}", "screen flow for {slug}",
-  "/sdd:ux-flows {slug}". Always markdown + mermaid regardless of the design tool; the Socratic
+  "/foresdd:ux-flows {slug}". Always markdown + mermaid regardless of the design tool; the Socratic
   pass confirms each flow in prose, never raw mermaid. Feeds design (target-surface evidence),
   sequences (SCR alignment), screens (the inventory) and plan-tests (e2e-through-UI paths).
   Hard-refuse if spec.md is missing; skipped for features with no human-facing UI.
@@ -27,7 +27,7 @@ target-surface + UI-architecture decisions (the formal `target_surfaces` declara
 e2e-through-UI paths from here.
 
 **This stage is optional by surface, not by size:** its N/A condition (no human-facing UI) lives in
-[`../allocations/size-matrix.md`](../allocations/size-matrix.md) and is evaluated by `clarify`'s handoff
+[`../allocations/tshirt-sizing.md`](../allocations/tshirt-sizing.md) and is evaluated by `clarify`'s handoff
 (`specify`'s when clarify was legally skipped). Invoked directly, it always runs.
 
 Question phrasing → [`../allocations/style.md`](../allocations/style.md); each diagram is confirmed
@@ -47,7 +47,7 @@ here).
   stories».
 - (Expected) `docs/design-system.md` — the platform posture (the default platform assumption) +
   the tool. **Absent → not a block**: work in `code`-mode assumptions, recommend
-  `/sdd:design-system` in the handoff.
+  `/foresdd:design-system` in the handoff.
 - (Optional) `CONTEXT.md` (both levels, per-feature wins) — canonical roles for the actors.
 - (Optional) `docs/features/<slug>/.size` / `.route` — depth + handoff resolution; absent → default
   M / standard and say so in the handoff.
@@ -57,10 +57,11 @@ here).
 1. **Gate + read.** `test -f docs/features/<slug>/spec.md` → missing = refuse with the pointer
    above. Read spec §1 (context), §4 (user stories — which touch a UI?), §5 (ACs), `CONTEXT.md`
    glossary, and `docs/design-system.md` (posture + tool; note its absence for the handoff).
-2. **Set the depth dial + platform.** Read `interview_depth` from `.claude/sdd.local.md` (else
-   medium); unless `--depth=` was passed, ask ONE depth-selection `AskUserQuestion` per
-   [`../allocations/style.md`](../allocations/style.md), then confirm the **platform posture** in
-   the same call (second question): the design-system posture as «(Recommended)», deviation
+2. **Set the depth dial + platform.** Resolve depth per the order in the interview-depth file:
+   `--depth=` (this run) → `docs/features/<slug>/.depth` (reuse, one-line announce) → otherwise
+   ONE depth-selection `AskUserQuestion` per [`../allocations/style.md`](../allocations/style.md)
+   (`interview_depth` from `.claude/sdd.local.md`, else medium, as «(Recommended)»; answer
+   written to `.depth`). Confirm the **platform posture** in the same call (its own question): the design-system posture as «(Recommended)», deviation
    allowed + recorded with its why. Depth governs the per-flow question volume
    (→ [`../allocations/interview-depth.md`](../allocations/interview-depth.md)); coverage never shrinks.
 3. **Derive flows + inventory.** For every **UI-touching** §4 user story: one flow — happy path +
@@ -73,9 +74,11 @@ here).
    on the first flow; each flow lands on disk as soon as it's drafted — progressive writes per
    [`../allocations/write-and-commit.md`](../allocations/write-and-commit.md)),
    validate it parses per [`../allocations/mermaid-check.md`](../allocations/mermaid-check.md), then
-   describe it in plain words (every branch) and confirm — at medium/hard one `AskUserQuestion` per
-   flow (Accept / Fix / Save-as-OQ / Drop); at **easy**, write + one-line summary into the
-   assumptions ledger and proceed.
+   describe it with the shared template (header with `path:line`, numbered screens by `SCR-NN` +
+   name, a `Branches:` bullet per decision/error edge) and confirm — at medium/hard via
+   `AskUserQuestion`, up to 4 flows per call (Approve as is / Edit / Save as open question / Drop;
+   a UI-touching story's flow is mandatory, so Drop re-asks once); at **easy**, write + one
+   assumptions-ledger line per flow and proceed.
 5. **Fill the AC map + write.** Complete the AC-coverage table (every UI-touching §5 AC →
    flow/node/branch, or an explicit `N/A: <reason>`) on disk, re-validate every mermaid block, stamp
    `updated_at`. No commit yet — it follows the self-check.
@@ -88,10 +91,10 @@ here).
 7. **Commit + handoff.** On a passing self-check, **commit per
    [`../allocations/write-and-commit.md`](../allocations/write-and-commit.md)** — one commit for
    `ux-flows.md` (`ux-flows: <slug> ux-flows.md`); an unresolved item means no commit. Then emit the
-   **stage-handoff block** per [`../allocations/handoff.md`](../allocations/handoff.md)
+   **stage-handoff block** per [`../allocations/handover.md`](../allocations/handover.md)
    — *What I did* (incl. «self-check: 4/4 pass» + the commit SHA; + «`docs/design-system.md` absent — run
-   `/sdd:design-system`» when it was) + *Review* (`docs/features/<slug>/ux-flows.md`) + *Run next*:
-   `/clear`, then `/sdd:design <slug>` (it reads these flows as target-surface evidence).
+   `/foresdd:design-system`» when it was) + *Review* (`docs/features/<slug>/ux-flows.md`) + *Run next*:
+   `/clear`, then `/foresdd:design <slug>` (it reads these flows as target-surface evidence).
 
 ## Definition of Done
 
@@ -121,6 +124,6 @@ here).
   generation contract.
 - [`../allocations/diagram-presentation.md`](../allocations/diagram-presentation.md) ·
   [`../allocations/mermaid-check.md`](../allocations/mermaid-check.md) — confirm-in-prose + parse-validation.
-- [`../allocations/size-matrix.md`](../allocations/size-matrix.md) — the N/A condition (no human-facing UI)
+- [`../allocations/tshirt-sizing.md`](../allocations/tshirt-sizing.md) — the N/A condition (no human-facing UI)
   evaluated by the upstream handoff.
 - [`../allocations/interview-depth.md`](../allocations/interview-depth.md) — the depth dial set in step 2.

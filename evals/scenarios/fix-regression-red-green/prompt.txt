@@ -1,0 +1,10 @@
+/foresdd:fix free-shipping
+
+Headless eval run — there is NO interactive user; never call AskUserQuestion. Follow the fix
+skill's protocol exactly as written. The bug report (complete — intake needs nothing more):
+a support ticket says a shopper whose cart held two items at 25.00 each (item subtotal exactly
+50.00) was charged the 4.99 shipping fee at checkout, and the order total came to 54.99. The
+product page promises «Free shipping on orders of 50.00 or more». Every shopper with a subtotal
+of exactly 50.00 is affected, since the free-shipping release; carts above 50.00 ship free as
+expected. At the step-3 checkpoint take the Recommended option («Proceed») yourself. The repo's
+gate commands are `make test` and `make vet`. Finish by printing the stage-handoff block.

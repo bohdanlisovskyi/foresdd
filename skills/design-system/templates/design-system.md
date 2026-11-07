@@ -12,7 +12,7 @@ updated_at: "<YYYY-MM-DD>"
 > `ux-flows` / `screens` / `implement` / `review`. Committed — the tool choice and the inventory
 > are team-wide, not per-developer. `architecture-map.md` §Frontend / UI foundation stays the
 > inventory of the **code**; this file is the **design-side** canon (tool, posture, tokens,
-> component inventory, cross-screen conventions). Refresh via `/sdd:design-system` when the
+> component inventory, cross-screen conventions). Refresh via `/foresdd:design-system` when the
 > foundation changes.
 
 ## Platform posture

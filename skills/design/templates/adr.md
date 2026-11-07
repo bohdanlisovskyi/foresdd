@@ -1,7 +1,3 @@
-<!-- Format: MADR (Markdown Any Decision Record). -->
-<!-- Spawned by `design` when a decision crosses the blast-radius gate (references/blast-radius.md),
-     and also written by `decide-adr` for post-hoc decisions. -->
-
 ---
 status: Accepted                                # Proposed → Accepted → Superseded by NNNN. `design` writes Accepted directly.
 owner: "<decision owner — usually Architect>"   # who is accountable for the decision
@@ -10,6 +6,10 @@ updated_at: "<YYYY-MM-DD>"                       # last update (for Superseded �
 feature_size: "<from .size: XS/S/M/L/XL>"
 ticket: "<tracker ticket that triggered the feature>"
 ---
+
+<!-- Format: MADR (Markdown Any Decision Record). Frontmatter MUST stay on line 1.
+     Spawned by `design` when a decision crosses the blast-radius gate (references/blast-radius.md),
+     and also written by `decide-adr` for post-hoc decisions. -->
 
 # NNNN — <title in imperative: e.g. "Use a sliding-window counter for rate limiting">
 

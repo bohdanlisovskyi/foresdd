@@ -1,0 +1,27 @@
+{
+  "slug": "loan-renewal",
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Add Renew with 14-day extension and not-found handling",
+      "layer": "domain",
+      "deps": [],
+      "acs": ["AC-01", "AC-03"],
+      "dod": "Store.Renew extends DueAt by 14 days, increments Renewals, and returns ErrNotFound for an unknown id; unit tests cover both.",
+      "files_hint": ["internal/loan/loan.go", "internal/loan/loan_test.go"],
+      "file": "docs/features/loan-renewal/tasks/renew-extension.md",
+      "status": "todo"
+    },
+    {
+      "id": "T2",
+      "title": "Enforce the 2-renewal cap with ErrRenewalLimit",
+      "layer": "domain",
+      "deps": ["T1"],
+      "acs": ["AC-02"],
+      "dod": "Renewing a loan with Renewals == 2 returns ErrRenewalLimit and leaves DueAt unchanged; a unit test covers it.",
+      "files_hint": ["internal/loan/loan.go", "internal/loan/loan_test.go"],
+      "file": "docs/features/loan-renewal/tasks/renewal-cap.md",
+      "status": "todo"
+    }
+  ]
+}

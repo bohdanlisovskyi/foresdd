@@ -8,7 +8,7 @@ description: >
   (Figma MCP / Pencil MCP / code-only markdown), the platform posture (mobile-first /
   desktop-first / responsive), the token source, and the reusable component inventory. Once per
   repo, like survey. Triggers on "set up the design system", "design canon", "which design tool",
-  "establish the UI foundation", "/sdd:design-system". Read by ux-flows (posture) and screens
+  "establish the UI foundation", "/foresdd:design-system". Read by ux-flows (posture) and screens
   (tool + inventory); implement registers NEW components back into it. On tool: pencil it also
   bootstraps the .pen library itself — creates the file, walks the user through opening it, and
   seeds tokens + a foundations frame via the pen-keeper agent. Utility — not a backbone stage; run
@@ -41,11 +41,12 @@ Whoever owns the product's look (designer / frontend lead / the solo maintainer)
 ## Protocol
 
 1. **Check existing.** If `docs/design-system.md` exists, show its `tool` + posture + inventory
-   summary and ask: reuse as-is (STOP — nothing to do) / update (continue, edits land in place) /
+   summary and ask: reuse as-is (no writes, no commit — skip to the step-7 handoff's *Run next*
+   so the user isn't left without a next step) / update (continue, edits land in place) /
    rebuild. Never overwrite silently.
 2. **Scan the code side.** Read `architecture-map.md` §Frontend / UI foundation + the `frontend:`
    key. Map absent, stale, or `frontend: ""` on a repo that visibly has UI code → dispatch the
-   [`explorer`](../../agents/explorer.md) agent — `subagent_type: "sdd:explorer"` (fallback
+   [`explorer`](../../agents/explorer.md) agent — `subagent_type: "foresdd:explorer"` (fallback
    `subagent_type: "Explore"`, per [`../allocations/agent-roster.md`](../allocations/agent-roster.md)) —
    for the component library / tokens / styling approach / shared primitives, each with a
    `file:line`. A repo with no UI code at all is fine — the canon can start tool-side or empty
@@ -68,12 +69,12 @@ Whoever owns the product's look (designer / frontend lead / the solo maintainer)
    #1 way this skill «did nothing» — so materialize it:
    a. **File.** Absent → write the minimal stub to `pen_file` (`{"version": "2.17", "children": []}`).
    b. **Open + verify.** The Pencil MCP **ignores `filePath`** — it writes into whatever document
-      is active in the app. Ask the user to open the file (macOS: `open -a Pen <pen_file>`), then
+      is active in the app. Ask the user to open `<pen_file>` in the Pencil app (File → Open), then
       verify via `get_app_state` that the active canvas IS `pen_file`. Mismatch → stop and repeat
       the ask; **never write into a foreign document**.
    c. **Seed.** Dispatch the [`pen-keeper`](../../agents/pen-keeper.md) agent —
-      `subagent_type: "sdd:pen-keeper"` (no fallback: without the Pencil MCP this step degrades
-      to `code` mode per [`../allocations/tool-adapters.md`](../allocations/tool-adapters.md)) — with the
+      `subagent_type: "foresdd:pen-keeper"` (no fallback: without the Pencil MCP this step degrades
+      to `code` mode per [`../allocations/fallbacks.md`](../allocations/fallbacks.md)) — with the
       canon path, `pen_file`, and the token source files. It re-checks the active document, seeds
       the variables (light + dark), ensures the foundations frame, and returns a reconcile report.
    d. **Persist.** Relay the report's user actions — always «**Cmd+S in Pencil**»: the app holds
@@ -91,9 +92,9 @@ Whoever owns the product's look (designer / frontend lead / the solo maintainer)
    `docs/design-system.md` (`design-system: <tool> canon design-system.md`) and, on pencil, a
    separate one for the seeded `pen_file` (`design-system: <tool> canon <pen_file>`) when it
    changed on disk. An unresolved item means no commits. Then **emit the
-   stage-handoff block** per [`../allocations/handoff.md`](../allocations/handoff.md) (utility variant) —
+   stage-handoff block** per [`../allocations/handover.md`](../allocations/handover.md) (utility variant) —
    *What I did* (incl. «self-check: 5/5 pass» + the commit SHAs) + *Review* (`docs/design-system.md`) + *Run next*:
-   resume your backbone stage (typically `/sdd:ux-flows <slug>` for the UI feature in flight);
+   resume your backbone stage (typically `/foresdd:ux-flows <slug>` for the UI feature in flight);
    `/clear` optional.
 
 ## Definition of Done
@@ -114,7 +115,7 @@ Whoever owns the product's look (designer / frontend lead / the solo maintainer)
 - **Duplicating `architecture-map.md` §Frontend.** The map inventories the code; this file cites it
   and adds the design-side canon — never a second copy of the same rows.
 - **Blocking on a missing MCP.** No Figma/Pencil in the session → `code` mode is always available;
-  degrade, don't block (→ [`../allocations/tool-adapters.md`](../allocations/tool-adapters.md)).
+  degrade, don't block (→ [`../allocations/fallbacks.md`](../allocations/fallbacks.md)).
 - **An inventory with no anchors.** A component row that cites nothing is a guess — cite `file:line`
   or the tool node, or leave it out.
 - **A canon that names a `pen_file` nobody created.** `tool: pencil` without step 5 is a dangling
@@ -128,6 +129,6 @@ Whoever owns the product's look (designer / frontend lead / the solo maintainer)
 
 - [`./templates/design-system.md`](./templates/design-system.md) — the canon scaffold; inline
   comments are the per-section generation contract.
-- [`../allocations/tool-adapters.md`](../allocations/tool-adapters.md) — the design-tool MCP degradation row.
+- [`../allocations/fallbacks.md`](../allocations/fallbacks.md) — the design-tool MCP degradation row.
 - [`../allocations/agent-roster.md`](../allocations/agent-roster.md) — the explorer contract (step 2).
 - [`../../agents/pen-keeper.md`](../../agents/pen-keeper.md) — the .pen reconcile contract (step 5).

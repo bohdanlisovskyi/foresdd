@@ -8,6 +8,8 @@ The independent review (step 2) probes the feature diff along these dimensions. 
 - **End-to-end use-case + AC trace (the backstop).** Take the **whole** spec **§4 user-story set + §5 AC set** — **not only the ACs the diff claims** — and trace both through the chain. **Use-case level:** every §4 user story has ≥1 AC (specify's use-case floor) and a §6 sequence flow (sequences' use-case pass). **AC level:** **spec §5 → `sad.md` §6 sequence (a flow or branch shows it) → `data-model.md` (the schema supports it) → `contracts/openapi.yaml` (an endpoint/event exposes it) → `tasks.json` (a task claims it) → implement (code + a test asserts it)**. **The trace spans every surface declared in `sad.md` `target_surfaces`, not only the backend:** for a UI surface (`web-frontend` / `mobile-app` / `desktop-app`) a UI AC reaches a `ui`-layer task + a **component / e2e-through-UI** test and a UI-driven §6 flow (`<user>` → `<ui>` → `<service>`) shows it — and when the design pipeline ran, the chain passes through its artifacts too: **UI AC → `ux-flows.md` flow/branch → `screens.md` state → the `ui` task citing that SCR id → the component / e2e-through-UI test**. A UI AC that lands only a backend test — or a declared `screens.md` state no task builds — is a gap. The §5 set includes any AC carrying an `<!-- added-by-fix -->` marker — trace it like every other AC: full chain coverage, with the fix's pinning test as its minimum, not its ceiling. Flag anything that **drops out anywhere** — a user story with no AC or no flow, or an AC missing a flow, a task, a test, or code. The per-stage gates each guard one link (specify's §5 5-type + use-case floors, sequences' use-case + AC→flow coverage, plan-tests' AC→test, tasks' AC→task); `review` is the **end-to-end backstop** that catches anything that slipped *between* links and never reached the diff at all.
 - **Contract fidelity.** Does the change honour `data-model.md`, `contracts/openapi.yaml`, and the Accepted ADRs (e.g. the audit-in-transaction decision), or does it quietly diverge?
 
+**Legitimately absent links.** The dispatch prompt lists the chain links the skill already resolved as `N/A (<reason>)` (an optional stage whose N/A condition held — e.g. no `data-model.md` because there is no schema change). Skip those links in the trace; do **not** report them. A missing artifact that is **not** on that list is a gap like any other.
+
 A stage-1 finding means the feature does not yet meet its spec — it blocks ship until fixed or explicitly de-scoped (a spec change with the owner in the loop). A user story or AC that dropped out of the chain is a stage-1 finding even if no line of the diff mentions it.
 
 ## Stage 2 — is it good code (quality, usually non-blocking)
@@ -24,8 +26,11 @@ A stage-1 finding means the feature does not yet meet its spec — it blocks shi
 Reuse the clean-context discipline from [`../../allocations/critic.md`](../../allocations/critic.md): the reviewer has read-only tools, re-reads `spec.md` / contracts / ADRs itself, and emits **cited** findings only:
 
 ```
-- **[stage-N] <headline>** — file:line; AC: <id|n/a>; problem: <what>; suggested: <fix>.
+Review: <scope> — <n> stage-1 · <n> stage-2 (<n> major, <n> minor)
+- **[stage-N · blocker|major|minor] <headline>** — file:line; AC: <id|n/a>; problem: <what>; suggested: <fix>.
 ```
+
+The tally line and the severity are what the skill's overview table (step 4) and stage-2 batching (step 5) are built from — keep them exactly as the [`reviewer`](../../../agents/reviewer.md) agent defines them.
 
 On an async host (background/teammate mode), append the report-delivery instruction ([`../../allocations/agent-roster.md`](../../allocations/agent-roster.md), shared-contract point 2) to the dispatch prompt; an idle signal without the report is not a verdict — pull the report via messaging before merging findings.
 

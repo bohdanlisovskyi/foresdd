@@ -10,6 +10,9 @@ PostgreSQL. I want one place to see the last outcome; no new notification servic
 Saved ceiling: medium. No opening depth question. The interviewer preserves this raw text,
 including PostgreSQL, and reads the supplied `docs/export-operations.md`.
 
+Orientation line: “Medium depth — at most 10 questions, one at a time, likely far fewer. I'll save
+`docs/idea-brief.md` as we go; say "summary" any time to stop.”
+
 > Illustrative file evidence: the existing worker records completion/failure per export.
 > A real run must cite the actual inspected file/section, not this example.
 

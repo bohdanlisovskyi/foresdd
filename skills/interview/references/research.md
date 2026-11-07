@@ -35,7 +35,7 @@ consequent evidence gap instead of claiming verification.
 
 ## Researcher
 
-Dispatch `sdd:researcher` with **`mode: fact-check`**, the exact question, decision at stake,
+Dispatch `foresdd:researcher` with **`mode: fact-check`**, the exact question, decision at stake,
 raw idea, confirmed owner constraints, known sources, evidence already inspected, and remaining
 source budget. It returns:
 
@@ -53,7 +53,7 @@ record the missing check. Research can happen inline when brief; a helper is not
 
 ## Independent critique
 
-Use `sdd:devils-advocate` with **`mode: interview`** for material access/data/public-contract
+Use `foresdd:devils-advocate` with **`mode: interview`** for material access/data/public-contract
 risks, hard-to-reverse commitments, or the owner's explicit request for a stress-test. Pass
 raw idea + accepted decisions + evidence/unknowns + current direction. It returns zero to
 three findings: premise/evidence anchor → failure condition → consequence → possible observation

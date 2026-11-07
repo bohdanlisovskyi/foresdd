@@ -4,9 +4,9 @@ When the decision tree selects the team, the engine becomes a **lead** coordinat
 
 ## Roles (the shipped subagents)
 
-Spawn each by its plugin-namespaced `subagent_type` — `sdd:test-author`, `sdd:implementer`, `sdd:reviewer` (see [`../../allocations/agent-roster.md`](../../allocations/agent-roster.md) §Dispatching).
+Spawn each by its plugin-namespaced `subagent_type` — `foresdd:test-author`, `foresdd:implementer`, `foresdd:reviewer` (see [`../../allocations/agent-roster.md`](../../allocations/agent-roster.md) §Dispatching).
 
-- **[`test-author`](../../../agents/test-author.md)** (`sdd:test-author`) — RED only. Writes the failing test(s) for a task's `acs`, runs them, classifies the first run (GOOD/BAD/false-pass/NON-red per [`tdd-loop.md`](./tdd-loop.md)), and hands over the quoted failing line. Never writes production code.
+- **[`test-author`](../../../agents/test-author.md)** (`foresdd:test-author`) — RED only. Writes the failing test(s) for a task's `acs`, runs them, classifies the first run (GOOD/BAD/false-pass/NON-red per [`tdd-loop.md`](./tdd-loop.md)), and hands over the quoted failing line. Never writes production code.
 - **[`implementer`](../../../agents/implementer.md)** — GREEN + REFACTOR + GATE. Takes a task with its red test, writes the minimal code to pass, refactors while green, runs the per-task gate. Never weakens the test.
 - **[`reviewer`](../../../agents/reviewer.md)** — read-only. Two stages: stage-1 spec/AC compliance (does the change satisfy the `acs` it claims?), stage-2 quality (conventions, edge cases, anti-patterns). Has no write tools.
 
@@ -18,7 +18,7 @@ Spawn each by its plugin-namespaced `subagent_type` — `sdd:test-author`, `sdd:
 
 ## Flow per task
 
-`test-author` (RED) → `implementer` (GREEN+REFACTOR+GATE) → `reviewer` (review). A task advances only when its `deps` are `done`. The lead pulls ready tasks off the DAG and assigns them; up to `max_parallel_agents` run at once. After **every** handover the lead writes the task's status + step to its task file, `tasks/tracker.md` and `tasks.json` — the lead is the only writer of those files; teammates never touch them ([`tdd-loop.md`](./tdd-loop.md) §Status protocol). When the session has `TaskCreate` / `TaskUpdate`, teammates may claim and complete the native tasks themselves; the lead mirrors the step into `activeForm` and fills any gap.
+`test-author` (RED) → `implementer` (GREEN+REFACTOR+GATE) → `reviewer` (review). A task advances only when its `deps` are `done`. The lead pulls ready tasks off the DAG and assigns them; up to `max_parallel_agents` run at once. After **every** handover the lead writes the task's status + step to its task file, `tasks/tracker.md` and `tasks.json` — the lead is the only writer of those files; teammates never touch them ([`tdd-loop.md`](./tdd-loop.md) §Status protocol). Each write is paired with one progress line to the user, printed by the lead ([`tdd-loop.md`](./tdd-loop.md) §Progress output). When the session has `TaskCreate` / `TaskUpdate`, teammates may claim and complete the native tasks themselves; the lead mirrors the step into `activeForm` and fills any gap.
 
 ## Serialization lanes (the lead enforces)
 

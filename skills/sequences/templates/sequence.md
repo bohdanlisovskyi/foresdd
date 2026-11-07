@@ -2,7 +2,9 @@
 <!-- One `### <flow name>` block per critical flow. Participants are GENERIC placeholders — -->
 <!-- replace the <…> message/note text with this flow's specifics, NOT the participant names. -->
 <!-- Generic vocabulary (the only allowed participants): -->
-<!--   <client>          — whatever initiates the flow (UI, CLI, another service, a scheduler) -->
+<!--   <user>            — the human actor (`actor`), only when sad.md target_surfaces declares a UI surface -->
+<!--   <ui>              — the user-facing surface (web / mobile / desktop), only with a declared UI surface -->
+<!--   <client>          — whatever initiates a non-UI flow (CLI, another service, a scheduler) -->
 <!--   <service>         — the building block that owns this flow (from §5) -->
 <!--   <data-store>      — the persistent store the service reads/writes -->
 <!--   <external-system> — a third party the service calls out to -->
@@ -25,17 +27,43 @@ sequenceDiagram
     C->>S: <action>
     S->>D: <read / lookup>
     D-->>S: <result>
-    S->>D: <write>
-    Note over S,D: persists <entity> (see §6 / informs data-model indexes)
-    D-->>S: <ack>
-    S-->>C: <success outcome>
+    %% Branch at the point the outcome is decided — the happy path is one branch, not the tail after it.
     alt <error condition from acceptance criteria>
         S-->>C: <error outcome — name it, no status numbers>
-    else <second error condition>
-        D-->>S: <store failure>
-        S-->>C: <error outcome>
+    else happy path
+        S->>D: <write>
+        Note over S,D: persists <entity> (informs data-model indexes)
+        D-->>S: <ack>
+        S-->>C: <success outcome>
     end
-    Note over C,S: Postcondition: <state guaranteed after this flow, from spec>
+    Note over C,S: Postcondition: <state guaranteed after the happy path, from spec>
+```
+
+### <UI-driven flow name>
+
+<!-- Use this shape instead of the sync one when sad.md target_surfaces declares a UI surface. -->
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as <user>
+    participant UI as <ui>
+    participant S as <service>
+    participant D as <data-store>
+
+    Note over U,UI: Precondition: <screen / state the user starts from>
+    U->>UI: <user action>
+    UI->>S: <request>
+    alt <error condition from acceptance criteria>
+        S-->>UI: <error outcome>
+        UI-->>U: <what the user sees>
+    else happy path
+        S->>D: <write>
+        Note over S,D: persists <entity> (informs data-model indexes)
+        D-->>S: <ack>
+        S-->>UI: <success outcome>
+        UI-->>U: <what the user sees>
+    end
 ```
 
 ### <async flow name>

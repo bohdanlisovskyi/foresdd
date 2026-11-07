@@ -2,9 +2,12 @@
 #   fields + constraints  ← data-model.md (every field traces to a column; copy maxLength/pattern/enum)
 #   error responses       ← sad.md §6 sequence alt-branches (one response per branch)
 #   endpoint list + shape ← spec.md §4 user stories / §5 acceptance criteria
-# Replace every <...>. Keep the conventions baked in below (3.1, BearerAuth, cursor page,
-# {code,message,details?} envelope). Schema NAMES use the domain language from data-model.md —
-# never a Go/TS/Python idiom, never a driver's error type.
+# Replace every <...>. Conventions shown here (BearerAuth, cursor page, URL /api/v1 versioning,
+# {code,message,details?} envelope) are the GREENFIELD DEFAULTS — swap each for the repo's own
+# convention resolved in SKILL.md step 1d (see references/drift-check.md § Conventions). Fixed
+# regardless of repo: OpenAPI 3.1 nullability, one error envelope, $ref, placeholder-only examples.
+# Ids use the PK format data-model.md chose — `<id-schema>` below. Schema NAMES use the domain
+# language from data-model.md — never a Go/TS/Python idiom, never a driver's error type.
 openapi: 3.1.0
 
 info:
@@ -35,10 +38,10 @@ paths:
         - in: query
           name: after
           description: cursor — id of the last item seen; the page starts after it
-          schema: { type: string, format: uuid }
+          schema: <id-schema>   # e.g. { type: string, format: uuid } — the PK format from data-model.md
         - in: query
           name: before
-          schema: { type: string, format: uuid }
+          schema: <id-schema>
         - in: query
           name: limit
           schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
@@ -61,7 +64,7 @@ paths:
           name: Idempotency-Key
           required: true
           description: client-generated key; the server returns the first result on retry (TTL <N>h)
-          schema: { type: string, format: uuid }
+          schema: { type: string, maxLength: 255 }
       requestBody:
         required: true
         content:
@@ -123,7 +126,7 @@ components:
       required: [id]
       additionalProperties: false
       properties:
-        id: { type: string, format: uuid }
+        id: <id-schema>
         # Bounded text → maxLength from the model's varchar(N); nullable → type: [string, null].
         title: { type: string, maxLength: 200 }
         # Closed set → enum from the model's enumerated type.
@@ -149,4 +152,4 @@ components:
           items: { $ref: "#/components/schemas/<Resource>" }
         has_next: { type: boolean }
         has_prev: { type: boolean }
-        next_cursor: { type: [string, "null"], format: uuid }
+        next_cursor: { type: [string, "null"] }   # opaque cursor

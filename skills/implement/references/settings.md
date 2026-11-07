@@ -5,7 +5,7 @@ documented template, the create-when-absent procedure, the `.gitignore` patch, t
 every key, the edit rules, and the who-creates-who-changes-who-reads table. This file carries only
 what is specific to the **engine** — which keys it consumes, how model + effort resolve at
 dispatch, and how `.size` scales them. Values are changed by [`../../config/SKILL.md`](../../config/SKILL.md)
-(`/sdd:config`) and by nothing else.
+(`/foresdd:config`) and by nothing else.
 
 `implement` **ensures** the file the same way the other five creating skills do (protocol step 2:
 absent → write the canonical template + patch `.gitignore`; present → read, never overwrite). The
@@ -42,8 +42,7 @@ model-availability degrade rule, in
   unavailable model degrades per the roster rule (retry once on `inherit` — never block).
 - **Env path.** The engine exports `CLAUDE_CODE_EFFORT_LEVEL` / `CLAUDE_CODE_SUBAGENT_MODEL` for
   the dispatch when these keys are set — the reliable lever (frontmatter alone may not suffice; see
-  [`../../allocations/agent-roster.md`](../../allocations/agent-roster.md)). Claude Code only — Codex CLI
-  and Cursor ignore them → [`../../allocations/tool-adapters.md`](../../allocations/tool-adapters.md).
+  [`../../allocations/agent-roster.md`](../../allocations/agent-roster.md)).
 - **`.size` scaling.** The engine raises the default effort for **L/XL** features (execution agents
   → `high`) before dispatch and keeps the cheap defaults for **XS/S** — a cross-module change is
   where reasoning depth pays off. An explicit `effort_<role>` in the settings always wins over the
@@ -53,6 +52,9 @@ model-availability degrade rule, in
 
 ## Reading semantics
 
-Unknown keys ignored, a missing key falls back to its documented default, a malformed file → warn
-and run on all-defaults. The engine is a **reader**: it never repairs, reformats or rewrites the
+Canonical in [`../../allocations/settings-file.md`](../../allocations/settings-file.md) § Reading
+semantics: unknown keys ignored; a missing **or commented-out** key falls back to its documented
+default (adaptive rules included — the template ships the model / effort keys commented out, so the
+floor and the `.size` scaling apply); an invalid value falls back for **that key only**, with a
+one-line warning; a malformed file → warn and run on all-defaults. The engine is a **reader**: it never repairs, reformats or rewrites the
 file — that is `config`'s job alone.

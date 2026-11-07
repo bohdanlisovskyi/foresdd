@@ -19,6 +19,10 @@
    first. The new record links the old one, and the right move is usually to **strengthen the
    old pinning test** (it let the regression through), not to write a parallel one.
 
+**From a review finding** (`review` → *Fix now → fix*): the slug and the AC come with the
+finding — skip steps 1–3 above and start the decision table at row 2 with the cited AC. Step 4
+(the recurrence check) still runs.
+
 ## The decision table (ask in order)
 
 | # | Question | Yes → | No → |
@@ -39,6 +43,7 @@ too, or the next implementation reintroduces the bug legally).
 | (b) Spec-bug | RED → GREEN fix (against the **corrected** reading) | AC wording patched, before → after shown to the user | the before/after wording |
 | (c) Gap | RED → GREEN fix | new AC appended to §5 with the marker | the new AC text |
 | No-spec | RED → GREEN fix | none exists to patch | «no spec to patch — brownfield; survey recommended» |
+| Unreproduced | none — no guess-fix | none | «none — not reproduced; no fix applied» (record only, with the instrumentation follow-up) |
 
 ## The `added-by-fix` marker
 
@@ -66,7 +71,7 @@ symptom (the bug lives in pre-SDD code). Either way:
 
 - run intake → RED → GREEN → gate → record as usual;
 - the record's triage field is `no-spec`, and its «Spec patch» section states why;
-- the handoff recommends `/sdd:survey` (map the codebase so future fixes have something to trace
+- the handoff recommends `/foresdd:survey` (map the codebase so future fixes have something to trace
   to) — a recommendation, never a blocker.
 
 Hard-refusing here would lock out exactly the user this skill serves first: someone with a bug

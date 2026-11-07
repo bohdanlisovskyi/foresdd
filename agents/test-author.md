@@ -50,4 +50,5 @@ If `file` is missing from your brief (an older breakdown), say so in your handov
 - Test first, production code never. If you're tempted to add a stub to make it compile, add it to the **test scaffold** only, not the production package.
 - Never assert on implementation detail (private internals, exact SQL) — assert on the observable outcome the AC names.
 - Match the repo's test conventions exactly; a test that doesn't fit the suite is noise.
-- Your final message IS the handover: the test file path(s), the run command, then — on its own line, immediately before the quoted failing line — `Classification: GOOD red` (or `BAD red` / `false-pass` / `NON-red`; exactly these strings — the orchestrator parses this line).
+- Your final message IS the handover: the test file path(s), the run command, one line per AC
+  `AC <id> → <test name> (<level>)` so an uncovered AC is visible at a glance, then — on its own line, immediately before the quoted failing line — `Classification: GOOD red` (or `BAD red` / `false-pass` / `NON-red`; exactly these strings — the orchestrator parses this line).

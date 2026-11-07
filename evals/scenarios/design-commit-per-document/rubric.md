@@ -21,12 +21,15 @@ no batched-section commit on any route or depth. PASS requires ALL of:
    section marker like `§` / `sad §`, `finalization`, or `(quick)`.
 5. Nothing is left uncommitted under `docs/features/rate-limit-bump/` (the uncommitted diff vs
    the last commit is empty for that folder).
+5a. **Commit trailers.** Every commit after `baseline` carries `SDD-Stage: design` and
+   `SDD-Feature: rate-limit-bump` trailers.
 6. The tail of the run's final message contains the stage-handoff block (*What I did* /
    *Review* / *Run next*); *What I did* lists the commits with short SHAs; *Run next* points at
-   a next SDD stage — `/sdd:sequences rate-limit-bump`, or an auto-skip to
-   `/sdd:data-model rate-limit-bump` or `/sdd:api rate-limit-bump`: ANY of these is legal on
+   a next SDD stage — `/foresdd:sequences rate-limit-bump`, or an auto-skip to
+   `/foresdd:data-model rate-limit-bump` or `/foresdd:api rate-limit-bump`: ANY of these is legal on
    route quick; do not require one specific stage.
 
-FAIL if the commit count is not N + 1, if any commit mixes documents, if `sad.md` is missing or
+FAIL if the commit count is not N + 1, if any commit mixes documents, if a commit lacks the
+item-5a trailers, if `sad.md` is missing or
 has unfilled sections without an `<!-- N/A: … -->` marker, or if the final message lacks the
 handoff block.

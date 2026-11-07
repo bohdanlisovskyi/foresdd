@@ -1,0 +1,5 @@
+Bash(make test)
+Bash(make vet)
+Bash(python3 -m unittest:*)
+Bash(python3 -m compileall:*)
+Bash(python3 -c:*)

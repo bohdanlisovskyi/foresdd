@@ -58,4 +58,6 @@ each approach is strong and where it's exposed.
 - **Self-check before finalizing.** Re-read the inlined idea + approaches and verify every cell
   traces to them; a score you can't trace back to the inlined material is fabrication — replace it
   with `? — <reason>`.
-- No preamble — the matrix + the three synthesis lines only.
+- After the synthesis lines, one final line: `Sharpest tension: <lens> vs <lens> on <approach> — <why, ≤ 12 words>`
+  — the disagreement the user most needs to weigh. Not a recommendation.
+- No preamble — the matrix, the three synthesis lines and the tension line only.

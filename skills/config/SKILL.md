@@ -8,10 +8,12 @@ description: >
   decides how deeply the pipeline interviews you, which model tier its judgment agents run at, how
   strict the TDD gates are, and how tasks execute and commit. Triggers on "config", "settings",
   "configure sdd", "tune the pipeline", "change the judgment model", "set the interview depth",
-  "/sdd:config". Creates the file with documented defaults FIRST (so you have a working config
-  before answering anything), reads what already differs from the defaults, then asks five grouped
-  questions and patches only the keys you confirm — preserving your comments, key order and
-  unknown keys. Never touches the pipeline's artifacts; the settings file is gitignored, only the
+  "/foresdd:config", "/foresdd:config depth" (any one group by name, or a direct «set interview depth
+  to hard»). Creates the file with documented defaults FIRST (so you have a working config before
+  answering anything), shows the current settings as a short table (group → current → default or
+  custom), then either applies a targeted change to just the group you named, or asks the four
+  grouped questions (or just one group you pick), and patches only the keys you confirm —
+  preserving your comments, key order and unknown keys. Never touches the pipeline's artifacts; the settings file is gitignored, only the
   .gitignore patch is committed.
 ---
 
@@ -39,70 +41,97 @@ Whoever owns the repo's setup — usually the lead who runs the pipeline first, 
 
 ## Protocol
 
-1. **Ensure the settings file (first thing, after this skill's own gate).** If `.claude/sdd.local.md`
+1. **Ensure the settings file (first thing — this skill has no input gate).** If `.claude/sdd.local.md`
    is absent, create it now from the canonical template — documented defaults + the self-documenting body — and
    patch `.gitignore`; if it exists, read it and never overwrite. The one procedure lives in
    [`../allocations/settings-file.md`](../allocations/settings-file.md). Creating is unconditional;
-   **changing values is only ever offered by [`config`](../config/SKILL.md)**. Say one line:
-   «`.claude/sdd.local.md` created with documented defaults — `/sdd:config` to tune it».
-   (Here that line is the opening move, not a footnote: the user has a working config before the
-   first question.)
+   **changing values is offered here and nowhere else**. Say the one-line creation notice from the
+   canon (only when the file was just created). Here that line is the opening move, not a footnote:
+   the user has a working config before the first question.
 
-2. **Read the current state.** Report in three lines: which keys **differ from the documented
-   defaults** (with both values), which **unknown keys** and inline comments are present (they are
-   preserved verbatim — say so), and whether the frontmatter parsed. **A malformed frontmatter is
-   never repaired silently** — print the lines that failed to parse and offer exactly two ways
-   forward: rewrite from the template (naming what will be lost) or stop so the user fixes it by
-   hand.
+2. **Read the current state and show it as one table.** One row per decision group plus two
+   housekeeping rows, in this order: Interview depth · Model tier · Tests and gates · Execution and
+   commits · Commands · Other keys. Columns: **Group** · **Current** · **Status**.
+   - *Current* is the **option label** the group matches in [`./references/interview.md`](./references/interview.md)
+     (e.g. «Full gates, stop on red»), followed by the key(s) that make it so in backticks only when
+     they differ from the defaults. A group that matches no option reads `custom:` plus the odd
+     key(s) out, e.g. `custom: gate_lint false`.
+   - *Status* is `default` or `custom`. *Commands* reads «autodetect» or the pinned `cmd_*` keys.
+     *Other keys* lists unknown keys by name (preserved verbatim — say so) or «none».
+   Below the table, one line for anything that needs attention, and nothing when all is well.
+   Name any key with an **invalid value** (it is running on its default per the canon's
+   reading semantics). **A malformed frontmatter is never repaired silently** — print the lines
+   that failed to parse and offer exactly two ways forward: rewrite from the template (naming what
+   will be lost) or stop so the user fixes it by hand. If `settings_version` is absent or older
+   than the template, run the **upgrade offer** per the canon's «Upgrading an older file» — one
+   question, before the fork — and patch what the user picks.
 
-3. **One forking question: defaults or tune?** Ask it per [`../allocations/style.md`](../allocations/style.md).
-   «Stay on defaults» → skip to step 7 and print the handoff; the file is already on disk and
-   working, so this is a legitimate exit, not an abort.
+3. **Targeted request? Skip the fork.** If the invocation names a group or a key, go straight to
+   that group. This covers an argument (`/foresdd:config depth`), a key=value
+   (`interview_depth=hard`) or plain words («set interview depth to hard», «turn off the lint
+   gate», «put the judges on sonnet»). Resolve the name through the **group aliases** in
+   [`./references/interview.md`](./references/interview.md).
+   - **Value given and valid** (`interview_depth=hard`, «turn off lint») → write exactly that key,
+     no question. The user already decided. Go to step 5.
+   - **Group named, no value** («change the model tier») → ask only that group's question (step 4),
+     then step 5.
+   - **Ambiguous name or invalid value** → say which part didn't resolve (for a value, name the
+     valid set) and ask that group's question. If even the group is unclear, fall through to the fork.
 
-4. **Guess the host, with the evidence.** Which tool is running this session decides whether three
-   keys are even usable. Rank the signals and **name them out loud** — the guess is never written
-   silently, and contradictory traces are reported as contradictory. Signals + the always-confirm
-   rule → [`./references/detection.md`](./references/detection.md).
+   **Otherwise, one forking question** per [`../allocations/style.md`](../allocations/style.md):
+   «Keep defaults» / «Walk the four questions» / «Change one group». «Keep defaults» (or «Keep
+   as is» on a repeat run) → skip to step 6 and print the handoff; the file is already on disk
+   and working, so this is a legitimate exit, not an abort. «Change one group» → one follow-up
+   question with the four groups as options (each showing its current value from the step-2
+   table), then only that group's question.
 
-5. **Ask the five grouped questions in three `AskUserQuestion` calls.** Questions are grouped by
-   **decision**, not by key — a person tunes «how strict are the gates», not `gate_vet`. The five:
-   host confirmation · model tier · strictness and gates · execution and commits · interview depth.
-   Together they cover **20 of the 24 keys**. The four `cmd_*` keys are **not
+4. **Ask the grouped questions — all four in three `AskUserQuestion` calls, or only the targeted group.** Questions are grouped by
+   **decision**, not by key — a person tunes «how strict are the gates», not `gate_vet`. The four:
+   model tier · strictness and gates · execution and commits · interview depth.
+   Together they cover **20 of the 24 setting keys** (`settings_version` is meta and never asked). The four `cmd_*` keys are **not
    asked**: empty means the detection cascade reads the repo's own Makefile / package scripts /
    manifests, which is the better answer than a pinned command that rots. Verbatim wording, the
    options, and the question → keys map → [`./references/interview.md`](./references/interview.md).
    Model tier is asked **directly** rather than probed, because the session cannot enumerate the
    models an account actually has.
 
-6. **Write the confirmed keys, key by key.** Patch only the lines whose values were confirmed;
-   preserve comments, key order and unknown keys exactly. Print a `old → new` line per changed key,
-   and **separately** list what was **derived rather than asked** — a non-Claude host clamping
-   `team_mode: false` / `workflow_mode: off` / `max_parallel_agents: 1` (`TeamCreate` and `Workflow`
-   exist only in Claude Code), and the `cmd_*` keys left empty for autodetect. A value the user did
-   not choose must never read as if they had. Nothing else on disk is touched.
+5. **Write the confirmed keys, key by key.** Patch only the lines whose values were confirmed;
+   preserve comments, key order and unknown keys exactly. A commented-out key is pinned by
+   uncommenting its line, and returned to its adaptive default by commenting it back out — never
+   by adding a second copy. Print a `old → new` line per changed key (`(default)` for a
+   commented-out side),
+   and **separately** list what was **derived rather than asked** — the model / `effort_*` keys left
+   on their adaptive defaults, and the `cmd_*` keys left empty for autodetect. A value the user did
+   not choose must never read as if they had. On a targeted run, the groups that weren't touched get
+   one line («unchanged: model tier, execution and commits, interview depth») instead of a derived
+   list. A key written straight from a key=value or plain-words request is marked `(set directly)`.
+   When the change takes effect matters, say it: for example, `interview_depth` applies only to
+   features that don't yet have a `.depth`. Nothing else on disk is touched.
 
-7. **Structural self-check + handoff.** Run the **structural self-check** per
+6. **Structural self-check + handoff.** Run the **structural self-check** per
    [`../allocations/self-check.md`](../allocations/self-check.md) — re-read the file **from disk** and verify
    **6 items**: (1) `.claude/sdd.local.md` exists (`test -f`); (2) its frontmatter parses and every
    confirmed key holds the confirmed value; (3) every key present before the run is still present —
-   none dropped, including unknown ones; (4) every inline comment that was there is still there;
+   none dropped, including unknown ones (a key commented out on the user's instruction still counts
+   as present), and no key appears twice; (4) every inline comment and group header that was there is still there;
    (5) `.gitignore` contains `.claude/*.local.md` and `.worktrees/`, each exactly once; (6) no file
    outside `.claude/sdd.local.md` + `.gitignore` was modified (`git status --short`). Fix + re-check
    ≤2 cycles; surface anything unresolved. Then commit per [`../allocations/write-and-commit.md`](../allocations/write-and-commit.md):
    one commit `config: .gitignore sdd settings` **only if `.gitignore` actually changed** — the
-   settings file is gitignored and has nothing to commit. Then **emit the stage-handoff block** per [`../allocations/handoff.md`](../allocations/handoff.md)
+   settings file is gitignored and has nothing to commit. Then **emit the stage-handoff block** per [`../allocations/handover.md`](../allocations/handover.md)
    — *What I did* (the changed keys + the self-check line + the commit SHA or «nothing to commit») + *Review* (`.claude/sdd.local.md`) +
    *Run next* (utility variant: `/clear` optional, resume your backbone stage — name the likely one).
 
 ## Definition of Done
 
 - `.claude/sdd.local.md` exists and parses, whichever branch the run took (defaults or tuned).
-- Every key the user confirmed holds the confirmed value; every key they didn't confirm is
+- The current settings were shown as the step-2 table before anything was asked.
+- Every key the user confirmed (or set directly) holds that value; every key they didn't confirm is
   byte-identical to what was there before.
 - Unknown keys, key order and inline comments survived the run.
-- Every derived value (host clamp, autodetect) was named out loud, separately from the asked ones.
+- Every derived value (unchanged `effort_*`, autodetect) was named out loud, separately from the asked ones.
 - `.gitignore` covers `.claude/*.local.md` and `.worktrees/`.
-- The 6-item check in step 7 is this skill's structural self-check; its result is one line in the
+- The 6-item check in step 6 is this skill's structural self-check; its result is one line in the
   handoff.
 
 ## Anti-patterns
@@ -111,9 +140,10 @@ Whoever owns the repo's setup — usually the lead who runs the pipeline first, 
   nothing still ends up better off than before the run.
 - **Regenerating the file from the template** because a key looked stale. That is how a
   hand-written comment or a hand-added key disappears. Patch key by key.
-- **Writing a detected host silently.** Detection is evidence for a question, never an answer.
-- **Offering `team_mode` / `workflow_mode` on a non-Claude host.** They clamp, and the clamp is
-  stated — an option that cannot work is worse than no option.
+- **Walking all four groups for a one-key change.** «Set depth to hard» is a decision already
+  made. Write it, show `old → new`, done.
+- **Re-bundling a targeted edit.** Writing `gate_lint: false` alone leaves the group as
+  `custom: gate_lint false`. Don't "complete" it into the «Light gates» preset.
 - **Asking about `cmd_*`.** Empty = autodetect, which is the recommended answer; asking invites a
   pinned command that goes stale.
 - **A settings question inside another skill.** The six pipeline skills create and read.
@@ -123,9 +153,8 @@ Whoever owns the repo's setup — usually the lead who runs the pipeline first, 
 ## References
 
 - [`../allocations/settings-file.md`](../allocations/settings-file.md) — the canonical template, procedure and key semantics.
-- [`./references/detection.md`](./references/detection.md) — host signals, ranked, and the always-confirm rule.
-- [`./references/interview.md`](./references/interview.md) — the five questions verbatim + the question → keys map.
+- [`./references/interview.md`](./references/interview.md) — the four questions verbatim, the question → keys map, and the group aliases for targeted runs.
 - [`../allocations/style.md`](../allocations/style.md) — how every question is phrased.
-- [`../allocations/tool-adapters.md`](../allocations/tool-adapters.md) — what each Claude mechanism maps to under Codex CLI / Cursor.
+- [`../allocations/fallbacks.md`](../allocations/fallbacks.md) — what each stage does when a mechanism (`TeamCreate`, `Workflow`, a model tier) is unavailable.
 - [`../allocations/agent-roster.md`](../allocations/agent-roster.md) — what the model tier actually changes.
 - [`../implement/references/settings.md`](../implement/references/settings.md) — the engine-side delta.

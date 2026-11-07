@@ -1,0 +1,11 @@
+/foresdd:screens saved-searches --depth=easy
+
+Headless eval run — there is NO interactive user; never call AskUserQuestion. This session has NO
+Pencil MCP and NO Figma MCP: do not call any mcp__pencil__* or Figma tool. The design canon
+(docs/design-system.md, tool: pencil) and the feature's spec, sad.md, ux-flows.md and contract are
+committed in the fixture. For anything the confirm step would normally ask, decide the reversible
+option yourself and record it in the assumptions ledger.
+
+Follow the skill's protocol exactly — including what it says to do when the canon's design tool is
+unavailable — run the structural self-check, commit, and finish by printing the stage-handoff
+block.

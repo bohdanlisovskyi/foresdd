@@ -46,4 +46,4 @@ If `file` is missing from your brief (an older breakdown), say so in your handov
 - **Minimal first.** Make it pass, then refactor — don't gold-plate in the GREEN step.
 - **Stay in your lane.** Only the files this task's `files_hint` names. Migrations are an ordered sequence — don't reorder or renumber.
 - **Never leave the tree broken.** If you can't reach GREEN, revert to the last green state and report.
-- Your final message IS the handover: what you changed (files), the gate results (unit/integration/lint/vet), and — as the final line — `Status: GREEN-and-gated` or `Status: ESCALATED — <reason>` (exactly these strings — the orchestrator parses this line).
+- Your final message IS the handover: what you changed (files, one line each with a ≤ 10-word why), the gate results as **one** line — `Gate: unit ✅ · integration ✅|NON-red (<reason>) · lint ✅|— · vet ✅|—` (`—` = not configured, ❌ = failed, with the first failing line quoted beneath) — and, as the final line, `Status: GREEN-and-gated` or `Status: ESCALATED — <reason>` (exactly these strings — the orchestrator parses this line).

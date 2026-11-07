@@ -1,15 +1,16 @@
-<!-- Template for `api` — copied to docs/features/<slug>/contracts/events.md ONLY when the -->
-<!-- feature has async flows (a sad.md §6 sequence with a <message-bus> / <external-system> -->
-<!-- participant, an enqueue/deliver message, or a retry note). One `## Event` block per async -->
-<!-- message in the sequences. Event names use the domain language from data-model.md, not a -->
-<!-- broker/library idiom. Delete this file if the feature is fully synchronous. -->
 ---
 status: Draft
 owner: "<Backend Lead>"
 reviewers: []
 updated_at: "<YYYY-MM-DD>"
-feature_size: M
+feature_size: "<from .size: XS/S/M/L/XL>"
 ---
+
+<!-- Frontmatter MUST stay on line 1. Template for `api` — copied to docs/features/<slug>/contracts/events.md ONLY when the -->
+<!-- feature has async flows (a sad.md §6 sequence with a <message-bus> / <external-system> -->
+<!-- participant, an enqueue/deliver message, or a retry note). One `## Event` block per async -->
+<!-- message in the sequences. Event names use the domain language from data-model.md, not a -->
+<!-- broker/library idiom. Delete this file if the feature is fully synchronous. -->
 
 # Events — <feature>
 

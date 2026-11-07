@@ -9,7 +9,7 @@ CHANGES the schema: sad §5 declares a new `reaction` entity (`feedback_reaction
 
 1. The run REFUSED and points at the missing prerequisite: the final message names
    `data-model` for this slug (e.g. «run `data-model feedback-reactions` first» /
-   `/sdd:data-model feedback-reactions`) as what must run before the contract can be derived.
+   `/foresdd:data-model feedback-reactions`) as what must run before the contract can be derived.
 2. No contract artifact was generated: `docs/features/feedback-reactions/contracts/openapi.yaml`
    — and no `contracts/` directory at all — appears anywhere in the file tree, the git log, or
    the diff. Same for `api-sync-report.md` and `events.md`.

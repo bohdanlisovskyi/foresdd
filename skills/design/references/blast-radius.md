@@ -46,11 +46,11 @@ After each `AskUserQuestion` choice:
 
 1. **Score it** — how many of the three fire?
 2. **Decide:** 0 → inline, no ADR. 1 → borderline (default inline, except §4 Solution Strategy where the bar is lower because strategy is broad by definition). 2+ → ADR.
-3. **On a borderline,** ask explicitly: «This is borderline ADR-worthy because of <criterion>. Lock as ADR or keep inline?» with `Lock as ADR` (Recommended if irreversible) / `Inline only`.
+3. **On a borderline,** ask explicitly: «This is borderline ADR-worthy because of <criterion>. Record as ADR or keep inline?» with `Record as ADR` (Recommended if irreversible) / `Keep inline` — the exact shape is in [`./ask-examples.md`](./ask-examples.md).
 
 ## Why 5–12 per M feature
 
-- **Below 5:** probably under-ADR-ing (missed an irreversibility) — unless the feature is genuinely XS/S (2–4 is fine).
+- **Below 5:** probably under-ADR-ing (missed an irreversibility) — unless the feature is genuinely XS/S (XS 0–2, S 1–4 is fine).
 - **5–12:** healthy for an M feature; each ADR is a real decision with reread value.
 - **Above 12:** probably over-ADR-ing — bundle, re-scope, or move tactical detail inline. L/XL may justify 10–15.
 

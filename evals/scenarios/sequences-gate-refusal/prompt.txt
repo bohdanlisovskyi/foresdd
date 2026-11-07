@@ -1,0 +1,4 @@
+/foresdd:sequences order-notes --depth=easy
+
+Headless eval run — there is NO interactive user; never call AskUserQuestion. Follow the
+sequences skill's protocol exactly as written.

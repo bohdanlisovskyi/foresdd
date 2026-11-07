@@ -19,16 +19,22 @@
 - Data model + migration: `docs/features/<slug>/data-model.md` (migration `<NNNN>`)
 - API: `docs/features/<slug>/contracts/openapi.yaml`
 
-## Tasks (SDD-Task trailers)
+## Review
 
-<the per-task commits — `git log --grep SDD-Task`>
+- Review record: `docs/features/<slug>/_review/review-<date>.md` — <PASS (full | delta)>
+- Fixes since review / during the feature: <`_fixes/<date>-<short>.md` — one line each>, or none.
+- <only when applicable: ⚠ shipped without a PASS review — <reason> · ⚠ unreviewed commits after the review: <sha list>>
+
+## Tasks (SDD-Task / SDD-Fix trailers)
+
+<the per-task and fix commits — `git log --grep 'SDD-Task\|SDD-Fix'`>
 
 ## Verification
 
 - Unit: <result>
 - Integration: <result, or "CI — Docker-backed">
 - Lint + vet: <result>
-- Ran the feature: <what was exercised against the AC, or what was deferred and why>
+- Ran the feature: <per spot-checked AC — «AC-NN: <action> → <observed>», or what was deferred and why>
 
 ## Operational notes
 

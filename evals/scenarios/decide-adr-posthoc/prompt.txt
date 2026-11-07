@@ -1,0 +1,24 @@
+/foresdd:decide-adr webhook-delivery deliver-webhooks-via-transactional-outbox
+
+Headless eval run — there is NO interactive user; never call AskUserQuestion. Everything the skill
+would ask is stated below.
+
+The decision (made in code during implementation, never recorded): instead of the synchronous
+POST to the merchant endpoint that sad.md §4 describes, `internal/orders/service.go` now writes an
+`order.placed` row into a new `webhook_outbox` table in the SAME transaction as the order
+(`migrations/000003_create_webhook_outbox.up.sql`), and a background worker in
+`internal/relay/relay.go` drains the table, sends the HMAC-signed webhook and retries with
+exponential backoff for up to 24 h. Why: a slow merchant endpoint in the checkout request path
+broke the p95 target, and a crash between the order commit and the HTTP call lost webhooks.
+
+Options the team weighed: (a) keep the synchronous POST after commit (the original sad.md §4
+plan); (b) transactional outbox table + background relay worker (chosen); (c) publish to a message
+broker such as NATS or Kafka.
+
+Decision author / owner: Sam Rivera (Architect). Ticket: WH-42. Reviewer sign-off is still
+PENDING from Dana Ortiz (Tech Lead) — she has not approved it yet.
+
+Follow the skill's protocol exactly: locate the feature, run the blast-radius worthiness check and
+state its score, dedup, pick the number, copy design's MADR template and fill every section, set the
+status per the review flow, close the loop in sad.md §9, run the structural self-check, commit, and
+finish by printing the stage-handoff block.

@@ -1,0 +1,44 @@
+openapi: 3.1.0
+info:
+  title: saved-searches
+  version: 0.1.0
+paths:
+  /api/v1/saved-searches:
+    get:
+      summary: List the shopper's saved searches
+      responses:
+        "200":
+          description: The list (may be empty)
+        "401":
+          description: Not signed in
+    post:
+      summary: Save the current search
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, query]
+              properties:
+                name: { type: string, minLength: 1 }
+                query: { type: string }
+      responses:
+        "201":
+          description: Saved
+        "400":
+          description: "saved_search.name_required — empty name"
+        "401":
+          description: Not signed in
+        "409":
+          description: "saved_search.duplicate_name — name already used by this shopper"
+  /api/v1/saved-searches/{id}:
+    delete:
+      summary: Delete one of the shopper's saved searches
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: "saved_search.not_found — missing or not owned"

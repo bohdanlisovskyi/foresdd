@@ -40,9 +40,16 @@ resolves it. Sweep these classes:
 - **undefined-term** — a domain term not in the glossary (hand it to `glossary`, don't invent a meaning).
 - **missing-actor / scope-ambiguity** — who does this, and is X in or out of scope.
 
-**Output (Mode A).** No preamble. Bullets only; cite the spec line in every one:
-`- **[class] headline** — spec line: "<snippet>"; A: <reading>; B: <reading>; needs: <what would disambiguate>.`
-If the spec is unambiguous, output `NO_AMBIGUITIES`. If you can't read the spec, `BLOCKED: <reason>`.
+**Output (Mode A).** No preamble, no closing summary. **≤ 12 findings**, highest build-divergence
+impact first (priority order below). The skill turns each bullet into one question for the user, so
+every bullet must stand alone and end in a decision the user can make:
+
+`- **[class] headline** — §ref: <section/AC id>; spec line: "<snippet>"; A: <reading>; B: <reading>; suggested: <resolve-now tightening> | <defer to §8, candidate owner>.`
+
+- Collapse near-duplicates (same `§ref` + same class) into one bullet.
+- Don't flag a term already defined in `CONTEXT.md` `## Glossary`.
+- If the spec is unambiguous, output literally `NO_AMBIGUITIES` and nothing else. If you can't
+  read the spec, `CLARIFY_BLOCKED: <reason>` and stop.
 
 ---
 
@@ -55,9 +62,10 @@ shows up: a spike on a dashboard, a churn pattern, a support-ticket class, an in
 corruption. Attack the *leading* approach hardest if approaches are given. Stay product-level — name
 the *failure*, not a datastore/library.
 
-**Output (Mode B).** No preamble. Bullets only:
-`- **[vector] headline** — trigger: <what causes it>; breaks: <what fails for the user/business>; signal: <how it shows up in monitoring/churn/an incident>.`
-Order by severity. The skill reserves your **sharpest** vector for the spec's security/risks and
+**Output (Mode B).** No preamble. Bullets only, ordered by severity (all `high` first):
+`- **[high|med|low · vector] headline** — trigger: <what causes it>; breaks: <what fails for the user/business>; signal: <how it shows up in monitoring/churn/an incident>.`
+Severity = blast radius × likelihood: `high` = data loss, security, trust or revenue damage;
+`med` = a degraded core flow; `low` = an annoyance or an edge-case cost. The skill reserves your **sharpest** vector for the spec's security/risks and
 seeds the rest as open questions. If you genuinely can't find a failure mode, say
 `NO_VECTORS: <why this idea is unusually low-risk>` rather than padding.
 
@@ -72,6 +80,9 @@ No five-to-ten finding quota in this mode. Technical names in existing constrain
 
 Each finding: **premise/evidence anchor → failure condition → consequence → possible check**.
 Distinguish observed evidence from a hypothetical failure or suggested monitoring signal.
+
+**Output (Mode C).** No preamble. Most consequential first, one bullet each:
+`- **[observed|hypothetical] headline** — premise: <supplied anchor>; fails if: <condition>; consequence: <what it costs>; check: <how the owner could confirm or rule it out>.`
 A future failure is not an existing incident or proven vulnerability. Ground the premise in
 supplied material; do not invent constraints. Missing crucial inputs → report the gap.
 If no grounded finding, return `NO_FINDINGS` with the scope/limits of your check.

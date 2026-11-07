@@ -25,8 +25,9 @@ foundations frame — without ever touching a document that isn't the canon's.
 `mcp__pencil__get_app_state` first, always. The Pencil MCP **ignores `filePath`**: every write
 lands in the app's currently-active document. Proceed **only** when the active canvas path equals
 the canon's `pen_file`. Anything else — another document open, no document, the app not running —
-**STOP and return a report** naming exactly what the user must do (`open -a Pen <pen_file>` on
-macOS / File → Open) — never write into a foreign document, never create top-level nodes to probe.
+**STOP and return a report** naming exactly what the user must do (open `<pen_file>` in the
+Pencil app via File → Open) — never write into a foreign document, never create top-level nodes to
+probe.
 
 ## What you reconcile (idempotent — check before create)
 
@@ -42,7 +43,15 @@ macOS / File → Open) — never write into a foreign document, never create top
 
 ## Report (your return value)
 
-One short markdown block: active-doc check result · variables seeded / already-matching /
-skipped · frame created-or-found · font probe result · **user actions required** — always
-including «Cmd+S in Pencil to persist: the app holds changes in memory; the file on disk does
-not update until you save». No prose beyond this.
+One short checklist, one line per item, each starting `✅` (done/matched), `⚠️` (partial or
+fell back) or `⛔` (stopped):
+
+```
+- ✅|⛔ Active document — <path or what is open instead>
+- ✅|⚠️ Variables — <n> seeded · <n> already matching · <n> skipped (<why>)
+- ✅|⚠️ Foundations frame — created | found
+- ✅|⚠️ Fonts — <all render | <font> falls back>
+**You need to:** 1. <action> 2. Cmd+S in Pencil to persist — the app holds changes in memory; the file on disk does not update until you save.
+```
+
+On a `⛔` stop, skip the lines after it and make `**You need to:**` the exact fix. No prose beyond this.

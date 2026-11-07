@@ -1,0 +1,4 @@
+/foresdd:config interview_depth=hard
+
+Headless eval run — there is NO interactive user; never call AskUserQuestion. The request above
+already names the key and the value, so apply it and finish by printing the stage-handoff block.

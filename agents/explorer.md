@@ -38,11 +38,15 @@ apply: locate and summarize — never propose or apply the fix.
 
 ## What you return (your final message IS the map)
 
-A tight structured summary:
+A tight structured summary. **First line:** `Answer: <one sentence that answers the ask directly>`
+so the dispatcher can act without reading further. Then:
 
 - **Module layout** — where modules live, the per-module layer dirs, the self-wiring pattern.
 - **Closest precedent** — the existing feature most like the new one + its file:line anchors.
 - **Conventions** — error handling, IDs, wiring/registration, test style, migration naming (with one example each, cited `file:line`).
 - **Fit notes** — where the new feature would slot in, and any friction you spotted (not a design — just the lay of the land).
+
+Drop any heading the ask didn't request. For **bug localization**, replace the headings with a ranked list, most likely first (≤ 3):
+`1. **file:line** — likely|possible — why: <the evidence on the call path>; covering test: <path:line | none>.`
 
 Cite `file:line` for every claim. If you couldn't determine something, say `UNKNOWN: <what>` rather than guessing. If you were dispatched asynchronously (background/teammate mode), also deliver this exact map as a message to your dispatcher — an idle signal without the map is not a deliverable.

@@ -39,7 +39,7 @@ The list is **fixed but extensible** — a genuinely new surface (e.g. a voice/I
 firmware target) extends the table here, in one place, not inside a consuming skill. Most features
 pick **one or two** (`[backend-service]`, or `[backend-service, web-frontend]` for a fullstack
 feature); a multi-surface feature is **larger** (each surface adds its own layer + test tiers — see
-[`./size-matrix.md`](./size-matrix.md)) and multi-surface is itself usually a blast-radius decision
+[`./tshirt-sizing.md`](./tshirt-sizing.md)) and multi-surface is itself usually a blast-radius decision
 (irreversible / multi-module → an ADR).
 
 ## The contract — declared once at design, read (never re-derived) downstream
@@ -141,7 +141,7 @@ visual-regression tool / etc.) from the repo, exactly as it already does for the
 ## Where each skill reads this
 
 - **`ux-flows`** — runs **before** design, so it never reads `target_surfaces`; its no-UI N/A
-  condition derives from the spec's actors + the repo signal (→ [`./size-matrix.md`](./size-matrix.md)),
+  condition derives from the spec's actors + the repo signal (→ [`./tshirt-sizing.md`](./tshirt-sizing.md)),
   and its output (`ux-flows.md` — flows + the SCR inventory) is `design`'s **evidence** for the
   surface declaration.
 - **`design`** — owns the **selection**: the Target-surface decision is §4's first decision

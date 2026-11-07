@@ -1,0 +1,4 @@
+/foresdd:glossary what is a seat in our domain?
+
+Headless eval run — there is NO interactive user; never call AskUserQuestion. Answer the
+question from the repo's glossary files, then stop.

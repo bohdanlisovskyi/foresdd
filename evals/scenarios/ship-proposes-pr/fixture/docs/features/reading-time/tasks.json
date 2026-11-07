@@ -1,0 +1,27 @@
+{
+  "slug": "reading-time",
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Compute reading time and label from article text",
+      "layer": "domain",
+      "deps": [],
+      "acs": ["AC-01", "AC-02", "AC-03"],
+      "dod": "minutes() and label() pass unit tests for exact, partial-minute and empty text",
+      "files_hint": ["readtime/core.py", "tests/test_core.py"],
+      "file": "docs/features/reading-time/tasks/t1-core-estimate.md",
+      "status": "done"
+    },
+    {
+      "id": "T2",
+      "title": "Expose the label through an editor CLI over a draft file",
+      "layer": "app",
+      "deps": ["T1"],
+      "acs": ["AC-03", "AC-04"],
+      "dod": "python3 -m readtime <file> prints the label; an unreadable path exits 1 with a message",
+      "files_hint": ["readtime/__main__.py", "tests/test_cli.py"],
+      "file": "docs/features/reading-time/tasks/t2-editor-cli.md",
+      "status": "done"
+    }
+  ]
+}

@@ -15,13 +15,15 @@ Open with a single `AskUserQuestion` that gauges how the user wants to engage (a
 
 Calibration governs **depth + phrasing**, not the set of decisions — the same foundation gets fixed either way. Default to *guided-default* if the answer is ambiguous (over-explaining is cheaper than overwhelming).
 
+**Don't ask what the user already told you.** «Just use defaults» → *guided-default*; «I'll pick the stack myself» or a request that already names stack + layout → *expert*. State the depth taken from their words in one line and skip the question. The depth is never locked: «explain more» shifts toward *guided-explained*, «just pick» toward *guided-default*, for the rest of the session.
+
 ## G3 — Intent (short, not a brief)
 
 1–3 questions, at the calibrated depth: **what is this** (one line) and **what kind of capabilities** (e.g. HTTP API / CLI / web app / library / worker), plus the one or two hard constraints if any (must use language X / must deploy to Y). Stop there — feature-level scope is `specify`'s job, per feature. The goal is only «enough to choose an architecture».
 
 ## G4 — The foundation choices (recommend a coherent default set)
 
-Pick these together. In *guided-default* mode, present the whole set as one recommended bundle + a confirm; in *guided-explained* / *expert*, walk the ones that matter. Always recommend a **coherent** default (the pieces fit each other), and gloss each per style.
+Pick these together. In *guided-default* mode, present the whole set as one recommended bundle + a confirm; in *guided-explained* / *expert*, walk the ones that matter. Always recommend a **coherent** default (the pieces fit each other), and gloss each per style. When the bundle is presented, also name **what the user needs installed locally** for it (the language toolchain; a container runtime or a local DB server if the datastore needs one) — `scaffold` checks for them before writing anything, and a first-timer shouldn't discover the requirement as a failed build.
 
 | Decision | What to pick | Default heuristic |
 |---|---|---|

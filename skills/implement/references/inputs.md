@@ -17,7 +17,7 @@ The loaded `tasks.json` must satisfy the shape from the `tasks` skill:
 
 A `tasks.json` with `slug: "_scaffold"` and `layer: scaffold` tasks is the scaffold plan from
 `survey`'s greenfield foundation — it is **not** an `implement` input. Redirect: «this is the
-scaffold set — run `/sdd:scaffold` (the materialization protocol + the skeleton smoke-test anchor
+scaffold set — run `/foresdd:scaffold` (the materialization protocol + the skeleton smoke-test anchor
 are canonical there); `implement` is the feature engine.» After the skeleton is green, the normal
 per-feature flow (`specify → … → implement`) builds into it with real feature TDD.
 
@@ -33,7 +33,7 @@ The engine does **not** paste these into prompts — each agent (or the sequenti
 
 - `docs/features/<slug>/tasks/<task-slug>.md` — **the brief** (the `file` field of the task). Read first, always.
 - `docs/features/<slug>/spec.md` — §5 acceptance criteria (the source of truth for what each test asserts; the task file quotes the ones it needs verbatim, so open the spec when the quoted slice looks wrong or incomplete).
-- `docs/features/<slug>/test-plan.md` — the AC→test map, if `plan-tests` ran. **For XS/S the plan is usually inline instead** — a `## Test plan` section in `spec.md` (per the size matrix); check both locations and read whichever exists.
+- `docs/features/<slug>/test-plan.md` — the AC→test map, if `plan-tests` ran. **For XS/S the plan is usually inline instead** — a `## Test plan` section in `spec.md` (per the T-shirt sizing matrix); check both locations and read whichever exists.
 - `docs/features/<slug>/data-model.md` + the **staged** migration files under `docs/features/<slug>/migrations/` — the schema the code targets (a `layer: migration` task promotes them into the live `migrations/` tree; see «Staged migrations → promote» below).
 - `docs/features/<slug>/contracts/openapi.yaml` — the API contract handlers must match.
 - `docs/features/<slug>/sad.md` + Accepted `adr/` — the architecture and the locked decisions.

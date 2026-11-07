@@ -1,4 +1,4 @@
-# Draft generation — per-section contract for specify step 6
+# Draft generation — per-section contract for specify step 5
 
 The authoritative format for each section is the `<!-- instruction -->` comment in [`../templates/spec.md`](../templates/spec.md). This file is the operational glue: where content comes from and what is forbidden.
 
@@ -7,7 +7,16 @@ The authoritative format for each section is the `<!-- instruction -->` comment 
 1. **`CONTEXT.md` `## Glossary`** — canonical for role names + domain terms. If anything contradicts it, the glossary wins.
 2. **The interview** — accepted decisions and relevant evidence from `docs/idea-brief.md`, plus current owner corrections and step-2 specification gaps, per [`brief-reuse.md`](./brief-reuse.md). Reuse the problem, trigger, outcome and constraints; preserve provenance and blockers.
 3. **Ideation output** — reused brief evidence/accepted direction or new step-3 gap work → §1 ¶3. Never require absent matrix cells or invent scores to satisfy the fresh-suite format.
-4. **Channel outputs** (step 5) — reference-module patterns, doc/MCP/KB quotes → §1 ¶4 traceability only.
+4. **Channel outputs** (step 4) — reference-module patterns, doc/MCP/KB quotes → §1 ¶4 traceability only.
+
+## Size-scaled counts — a range, not a quota
+
+The template gives a typical range per section by size (`.size`): e.g. §4 1–3 US for XS/S, 3–8 for M+; §7 1–2 KPIs for XS/S, ≥3 for M+. Use the range to sanity-check the draft, never to pad it. The only **hard minimums** are the coverage floors (§5: ≥1 AC per coverage type and per retained US) and «every §2 goal has ≥1 US». An item added only to reach a number is filler — the critic flags it as F5.
+
+- **§4** covers every glossary role the feature *involves* (named in the idea, §1, or an AC) — not every role the project glossary lists.
+- **§6** keeps only the rows for quality aspects this feature changes or puts at risk; the placeholder rows are a menu, not a checklist.
+- **§8** holds only genuinely open questions; `None.` is a valid, preferred outcome.
+- **§8.1** holds the accepted assumptions-ledger entries (easy depth) and `assumption`-class brief evidence the spec relies on.
 
 ## §5 acceptance-criteria contract
 
@@ -41,6 +50,7 @@ The product-level sections must not name a **concrete technology** — a specifi
 ## Pre-write hygiene (before Socratic)
 
 - §4 US roles use CONTEXT glossary terms verbatim.
-- §3 Non-goals each carry a reason (no inventing).
+- §3 Non-goals each carry a reason and fence something a reader could plausibly assume is in scope (no inventing).
+- §5 AC headings use the exact coverage-type words (`happy` · `error` · `authorization` · `domain invariant` · `cross-context`).
 - §1 ¶3 states the committed approach without losing the vector.
 - §5 has ≥1 of each coverage type and 0 forbidden tokens (self-scan; the critic + regex are the backstop).

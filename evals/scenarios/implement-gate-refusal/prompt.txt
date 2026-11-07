@@ -1,0 +1,4 @@
+/foresdd:implement loan-renewal
+
+Headless eval run — there is NO interactive user; never call AskUserQuestion. Follow the
+implement skill's protocol exactly as written.

@@ -55,7 +55,7 @@ else:
 
 ## Banner (step 7)
 
-After the tree + guards resolve, print exactly what will happen, e.g.:
+After the tree + guards resolve, print exactly what will happen — the settings, then the run plan — e.g.:
 
 ```
 SDD implement — feature: notification-preferences
@@ -64,7 +64,19 @@ SDD implement — feature: notification-preferences
   isolation     = worktree
   integration   = auto (docker: reachable)
   commit        = per_task  (branch: proof/sdd-notification-preferences)
+  models        = test-author sonnet/medium · implementer sonnet/medium · reviewer opus/high
+  commands      = unit `make test` · integration `make test-integration` · lint `golangci-lint run` · vet `make vet`
   tasks         = 6   phases = 4   longest_chain = 4
+  resume        = T1, T2 done (skipped) · T3 reset to todo (was in_progress)      ← only on a resumed run
+
+run plan:
+  wave 1  T1 add preferences table [migration] · T2 preference rules [domain]   (parallel)
+  wave 2  T3 preferences repository [infra]
+  wave 3  T4 update-preferences use case [app] · T5 preferences screen [ui]     (parallel)
+  wave 4  T6 PUT /preferences handler [ports]
+  lanes   migration sequence: T1 · shared `internal/prefs/`: T3 → T4
 ```
 
-The banner is mandatory — the user must see the mode and the settings that drove it before any code is written.
+When a guard changed the outcome, say so on the line it changed — e.g. `mode = SEQUENTIAL  [downgraded: team_mode=true but parallel_width=1]` — so the user isn't left wondering why their setting was ignored.
+
+The banner is mandatory — the user must see the mode, the settings that drove it and the run plan before any code is written. It is followed by the step-7 go/no-go question (**Start the run** / **Change settings first** / **Dry run only**); nothing — branch, roadmap commit, agent, native task — is created before the answer. A `require_integration: always` BLOCK is printed in place of the question, never after it.

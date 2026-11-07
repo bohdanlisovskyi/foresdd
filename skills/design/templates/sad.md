@@ -153,8 +153,9 @@ C4Container
     Container_Boundary(app, "<Our system>") {
         Container(web, "<Web/UI>", "<technology>", "<purpose>")
         Container(api, "<API/handler>", "<technology>", "<purpose>")
-        ContainerDb(db, "<Datastore>", "<technology>", "<purpose>")
     }
+
+    ContainerDb(db, "<Datastore>", "<technology>", "<purpose>")
 
     System_Ext(ext, "<External>", "<purpose>")
 

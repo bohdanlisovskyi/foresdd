@@ -1,10 +1,10 @@
 # Ambiguity checks — the eight classes + the devil's-advocate subagent
 
-The `clarify` skill sweeps `spec.md` for these eight ambiguity classes (self-sweep, step 2), then dispatches the clean-context subagent (step 3) whose prompt body is at the bottom of this file. Every finding from either source ends **Resolved** (spec tightened in its native section) or **Deferred** (§8 Open-Questions row with owner + due). The test for every class is the same: *could two competent engineers read this and reasonably build different things?*
+The `clarify` skill dispatches the clean-context subagent (step 2, in the background — its prompt body is at the bottom of this file) and, while it runs, sweeps `spec.md` for these eight ambiguity classes itself (the self-sweep, same step). Every finding from either source ends **Resolved** (spec tightened in its native section) or **Deferred** (§8 Open-Questions row with owner + due). The test for every class is the same: *could two competent engineers read this and reasonably build different things?*
 
 ## The eight ambiguity classes
 
-Priority for the step-4 merge (highest-impact first): **conflicting-requirement > under-specified-AC > unmeasured-NFR > undefined-term > missing-actor > scope-creep > vague-term > unstated-assumption.**
+Priority for the step-3 overview (highest-impact first): **conflicting-requirement > under-specified-AC > unmeasured-NFR > undefined-term > missing-actor > scope-creep > vague-term > unstated-assumption.**
 
 ### 1. vague-term
 - **Spot it:** an unquantified qualitative word in a goal, AC, or NFR — «fast», «scalable», «user-friendly», «soon», «most», «handles load», «secure enough». No number, no named threshold.
@@ -36,19 +36,19 @@ Priority for the step-4 merge (highest-impact first): **conflicting-requirement 
 
 ### 8. scope-creep
 - **Spot it:** an AC, goal, or open question that quietly exceeds the feature's declared size — a second subsystem, an extra integration, a "while we're here" capability the §3 non-goals don't fence off. Two engineers would disagree on whether it's in.
-- **Resolve it:** ask in-or-out. In → it must trace to a §2 goal (and may warrant re-running `classify-size`). Out → add an explicit §3 non-goal so it stops resurfacing. Never silently in.
+- **Resolve it:** ask in-or-out. In → it must trace to a §2 goal (and may warrant re-running `tshirt-size`). Out → add an explicit §3 non-goal so it stops resurfacing. Never silently in.
 
 ## A finding is closed two ways (mirror of the shared 4-state machine)
 
-- **Resolve now** → the spec is edited in its native section; record `before→after` in the edits-log.
-- **Defer to §8** → a checkbox row `- [ ] <question>? Default now: <X>. — owner: <name/role>, due: <date or stage trigger like "before sdd:design">`. Owner + due are mandatory (same rule as `specify`'s §8); missing either → re-ask once, else the finding stays unresolved (never silently dropped).
+- **Resolve now** → the spec is edited in its native section; record `before→after` in the edits-log. The option offers the concrete proposed tightening (before → after), so one click resolves it; the user's own wording comes through «Other».
+- **Defer to §8** → a checkbox row `- [ ] <question>? Default now: <X>. — owner: <name/role>, due: <date or stage trigger like "before foresdd:design">`. Owner + due are mandatory (same rule as `specify`'s §8) and are **pre-filled** in the option (owner = the class owner from clarify's §Owner or the subagent's candidate owner; due = the next stage that would be blocked); missing either → re-ask once, else the finding stays unresolved (never silently dropped).
 - **Not an ambiguity** (false positive, e.g. a term already in CONTEXT, or a number already present that the sweep misread) → drop it, no edit.
 
 ---
 
 ## Devil's-advocate subagent — prompt body
 
-> Everything below the line is the `Agent` prompt (`subagent_type: "general-purpose"`, clean context). The skill substitutes `<slug>` and passes the assembled text. The subagent **Reads the spec itself** — the skill inlines nothing (no paraphrase poisoning), per the dispatch discipline in [`../../allocations/critic.md`](../../allocations/critic.md). Unlike the coherence critic, this agent hunts **ambiguity / build-divergence**, not cross-section drift.
+> Everything below the line is the **fallback** `Agent` prompt — used only when `foresdd:devils-advocate` is unavailable (`subagent_type: "general-purpose"`, clean context); the named agent carries the same contract in its own definition. The skill substitutes `<slug>` and passes the assembled text. The subagent **Reads the spec itself** — the skill inlines nothing (no paraphrase poisoning), per the dispatch discipline in [`../../allocations/critic.md`](../../allocations/critic.md). Unlike the coherence critic, this agent hunts **ambiguity / build-divergence**, not cross-section drift.
 
 ---
 
@@ -56,8 +56,8 @@ You are a devil's-advocate reviewer for a feature specification. You did **not**
 
 ### Inputs — you MUST Read these yourself, do not trust any paraphrase
 
-- `docs/features/<slug>/spec.md` — the spec to attack. Sections: §1 Context, §2 Goals, §3 Non-goals, §4 User stories, §5 Acceptance criteria, §6 NFR (+ §6.1 Security), §7 KPIs, §8 Open questions.
-- `docs/features/<slug>/CONTEXT.md` — the glossary, **if it exists**. A domain term already defined here is NOT an ambiguity — do not flag it.
+- `docs/features/<slug>/spec.md` — the spec to attack. Sections: §1 Context, §2 Goals, §3 Non-goals, §4 User stories, §5 Acceptance criteria, §6 NFR (+ §6.1 Security), §7 KPIs, §8 Open questions (+ §8.1 Assumptions — accepted, not verified: an AC that only works if one of them is true is fair game).
+- `CONTEXT.md` (repo root) and `docs/features/<slug>/CONTEXT.md` — the glossary, **each if it exists** (per-feature wins on conflict). A domain term already defined at either level is NOT an ambiguity — do not flag it.
 
 ### Method
 
@@ -79,7 +79,7 @@ Be adversarial but honest: a point the authors clearly settled is not ambiguous 
 A markdown list, **≤ 12 findings**, highest build-divergence impact first. If the spec is genuinely unambiguous, output literally `NO_AMBIGUITIES` and nothing else. Otherwise one bullet per finding:
 
 ```
-- **[<class>] <one-line headline>** — §ref: <section/AC id>; divergence: <the two different things engineers could build>; suggested: <resolve-now tightening OR defer-to-§8 with a candidate owner>.
+- **[<class>] <one-line headline>** — §ref: <section/AC id>; divergence: <the two different things engineers could build>; suggested: <resolve-now tightening as concrete before → after text, OR defer-to-§8 with a candidate owner>.
 ```
 
 ### Discipline

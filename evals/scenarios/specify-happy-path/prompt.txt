@@ -1,4 +1,4 @@
-/sdd:specify rate-limit-bump --depth=easy
+/foresdd:specify rate-limit-bump --depth=easy
 
 Headless eval run — there is NO interactive user; never call AskUserQuestion. The raw idea to
 capture: operators need to bump a customer's per-user API rate limit at runtime (a configuration

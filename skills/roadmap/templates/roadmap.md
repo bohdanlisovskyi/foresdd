@@ -28,7 +28,7 @@ far along we are; this is the only line that says where along. -->
 
 <!-- instruction: the idea decomposed into vertical, buildable increments. One ROW each.
 Source = the section of the idea-brief/PRD/canon that justifies the step (no anchor → no step).
-Size ∈ XS | S | M | L | XL | fog. XS–XL per allocations/size-matrix.md; `fog` is not a size but its
+Size ∈ XS | S | M | L | XL | fog. XS–XL per allocations/tshirt-sizing.md; `fog` is not a size but its
 absence — the step nobody has formulated yet, so nothing about its shape is known. A `fog` row
 points its Step cell at the matching `## Not yet specified` area and gets no XS–XL anywhere.
 Status ∈ idea | spec'd | building | shipped — how far the BUILDING got; specify / implement / ship keep it current.

@@ -21,7 +21,7 @@ PASS requires ALL of:
 6. The Platform decisions section reflects **mobile-first** (from `docs/design-system.md`) — not
    desktop-first, not re-asked, no contradiction of the committed posture.
 7. The run committed its work, and the final message contains the stage-handoff block
-   (What I did / Review before continuing / Run next) forwarding to `/sdd:design saved-searches`.
+   (What I did / Review before continuing / Run next) forwarding to `/foresdd:design saved-searches`.
 
 FAIL on: a refusal, an attempted `AskUserQuestion`, a missing or unparseable mermaid block, a
 user story with no flow, an AC absent from the coverage table, a desktop-first assumption, or a

@@ -1,0 +1,13 @@
+/foresdd:survey
+
+Headless eval run — there is NO interactive user; never call AskUserQuestion. This repo is an
+existing Go service with source code (not greenfield) — run the brownfield path. There is no
+docs/idea-brief.md and no docs/roadmap.md.
+
+The owner's answer to the step-5 confirm is given here in advance: «Looks right» — print the prose
+summary of the map, then proceed to the commit without asking. For anything else the protocol would
+normally confirm, decide the reversible option yourself and say so in the handoff.
+
+Follow the skill's protocol exactly: scan, write docs/architecture-map.md from the template with
+real file anchors and the machine-readable keys, stamp reflects_commit, validate the C4 Mermaid,
+run the structural self-check, commit, and finish by printing the stage-handoff block.

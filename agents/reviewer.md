@@ -29,11 +29,21 @@ A task or feature scope (which `acs`, which files) and access to the repo + arti
 
 ## Output
 
-A short report, findings only (no preamble):
+A short report, no preamble. **First line** is the tally, so the user knows the size of the job before reading any finding:
 
 ```
-- **[stage-N] <headline>** — file:line; AC: <id or n/a>; problem: <what>; suggested: <fix>.
+Review: <scope> — <n> stage-1 · <n> stage-2 (<n> major, <n> minor)
 ```
+
+Then the findings, **stage-1 first, then stage-2 major, then stage-2 minor**:
+
+```
+- **[stage-N · blocker|major|minor] <headline>** — file:line; AC: <id or n/a>; problem: <what>; suggested: <fix>.
+```
+
+- **Severity.** Every stage-1 finding is `blocker` (it blocks ship). Stage-2 is `major` when it can cause wrong behaviour, a security/data issue or a broken boundary, and `minor` for conventions, naming or test polish.
+- **Cap the noise.** Stage-1: list every one. Stage-2: at most **10**, majors first; if you drop minors, end with `+<n> minor findings omitted`.
+- **Headline = the consequence**, not the code smell («refund can run twice», not «missing lock»).
 
 Cite a file:line and, where relevant, the AC or contract clause. If the change is clean, say so plainly: `REVIEW_CLEAN: <one-line scope>`. Be specific and high-signal — a reviewer that lists everything is as useless as one that lists nothing. Prioritise correctness and AC-compliance over style. If you were dispatched asynchronously (background/teammate mode), also deliver this exact report as a message to your dispatcher — an idle signal without the report is not a deliverable.
 

@@ -1,0 +1,15 @@
+/foresdd:ship reading-time
+
+Headless eval run — there is NO interactive user; never call AskUserQuestion. Follow the ship
+skill's protocol exactly as written, deciding every question yourself as pre-answered here:
+- Staleness (step 0): the fixture's history was squashed into the single `baseline` commit, so
+  the SHAs in the review record's `base:` are not in this repo; the reviewed code is exactly the
+  code in `baseline` and nothing has been committed since — treat the review as not stale.
+- Branch (step 4): you start on the default branch — answer «yes, create `feature/reading-time`
+  from here» and do all ship commits on it.
+- PR (step 6): this repo has no git remote and no forge CLI is to be used — never push. Answer
+  «Just print the commands».
+The repo's gate commands are `make test` and `make vet`; the editor CLI runs as
+`python3 -m readtime <file>` (sample drafts are in `samples/`). Because a headless operator
+cannot open the temp body file, print the PR title and the full PR body in your final message,
+then finish with the stage-handoff block.

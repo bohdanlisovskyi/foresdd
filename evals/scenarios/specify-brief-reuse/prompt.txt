@@ -1,4 +1,4 @@
-Run /sdd:specify export-status --depth=easy using docs/idea-brief.md.
+Run /foresdd:specify export-status --depth=easy using docs/idea-brief.md.
 This is a headless evaluation of specify (not interview). The owner's brief already fixes audience,
 problem, direction, and exclusions. Reuse these answers; do not fabricate an interview or repeat them.
 Current owner-supplied specification details: an authorized operator sees their tenant's completed,

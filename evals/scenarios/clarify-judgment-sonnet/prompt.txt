@@ -1,4 +1,4 @@
-/sdd:clarify session-timeout --depth=easy
+/foresdd:clarify session-timeout --depth=easy
 
 Headless eval run — there is NO interactive user; never call AskUserQuestion. The project's
 per-project settings live at .claude/sdd.local.md — read them before dispatching anything, honour

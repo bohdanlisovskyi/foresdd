@@ -14,6 +14,9 @@ lives in spec.md.
 Terms get fixed inline, the moment they surface in an interview / spec / review — never
 batched «I'll consolidate later». Empty H2 → prune before commit; keep only the sections
 that carry real content. ## Glossary is mandatory; the other two are optional.
+
+On bootstrap the `<…>` placeholder bullets below are deleted and the heading is filled in —
+they show the shape, they are never real entries.
 -->
 
 ## Glossary

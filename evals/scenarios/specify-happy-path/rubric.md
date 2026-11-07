@@ -11,13 +11,19 @@ PASS requires ALL of:
    {XS, S, M, L, XL}. If `.route` was written, it is exactly one of {quick, standard, full}.
 4. The run's final message ends with a stage-handoff block: a "What I did" part, a
    "Review before continuing" part listing real `docs/features/rate-limit-bump/...` paths, and a
-   "Run next" part naming the next `/sdd:` command.
+   "Run next" part naming the next `/foresdd:` command.
 
 5. Commits per `skills/allocations/write-and-commit.md`: after the baseline commit, `spec.md` and the
    `.size` + `.route` pair are committed in **separate** commits (the pair together in one; no
    commit mixes `spec.md` with `.size`), no commit touches files outside `docs/features/rate-limit-bump/`
    or `.gitignore`, and nothing under `docs/features/rate-limit-bump/` is left uncommitted. The
    handoff's "What I did" names the commits with their short SHAs.
+6. **Commit trailers.** Every commit after `baseline` has a subject of the form
+   `specify: rate-limit-bump <doc>` (or `tshirt-size: rate-limit-bump <doc>` for the `.size` +
+   `.route` commit) and carries the trailers `SDD-Stage: <the subject's stage>` and
+   `SDD-Feature: rate-limit-bump`. A commit that touches only repo-level files (e.g. `.gitignore`,
+   `docs/roadmap.md`) may omit `SDD-Feature`.
 
 FAIL if spec.md is missing, a section is absent with no explicit N/A, an AC leaks implementation
-tokens, `.size` is malformed, no handoff block was printed, or the commits break item 5.
+tokens, `.size` is malformed, no handoff block was printed, the commits break item 5, or any
+commit lacks the item-6 trailers.

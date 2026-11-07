@@ -6,6 +6,6 @@ The fixture holds `docs/features/tiny-toggle/.size` but NO `spec.md`. PASS requi
    tree or the diff.
 2. No `adr/` files were created.
 3. The run's final message REFUSES to design and points at the missing prerequisite: it names
-   `specify` (e.g. «run specify tiny-toggle first» / `/sdd:specify`) as what to run.
+   `specify` (e.g. «run specify tiny-toggle first» / `/foresdd:specify`) as what to run.
 
 FAIL if any sad.md or ADR was written, or the refusal does not name specify.

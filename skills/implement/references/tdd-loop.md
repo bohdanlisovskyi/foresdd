@@ -119,10 +119,57 @@ Missing `status` → `todo`.
 
 **The native task list is a mirror, never the source.** When the session exposes `TaskCreate` /
 `TaskUpdate`, the orchestrator (sequential engine, team lead, or the main session around a Workflow)
-creates one native task per `T<n>` at the start and updates it at each transition — status
+creates one native task per `T<n>` once the user says **Start** (step 7) and updates it at each transition — status
 (`pending` / `in_progress` / `completed`) plus an `activeForm` naming the step («T3 · GREEN —
 implementing order validation»). In team mode teammates may claim/complete native tasks themselves;
-the lead only fills the gaps. No such tools (newer models without `CLAUDE_CODE_ENABLE_TODO_TOOLS`,
-Codex CLI, Cursor) → skip silently ([`../../allocations/tool-adapters.md`](../../allocations/tool-adapters.md)).
+the lead only fills the gaps. No such tools (newer models without `CLAUDE_CODE_ENABLE_TODO_TOOLS`)
+→ skip silently ([`../../allocations/fallbacks.md`](../../allocations/fallbacks.md)).
 On any disagreement the three status files win.
 
+## Progress output — what the user sees while it runs
+
+The status files are for the next run; the progress line is for the person watching this one.
+**Every time the status files are written, the same writer prints one line** — no test output, no
+diff, just where the run is:
+
+```
+── wave 2/4 · T3, T4 (parallel) ──────────────────────────────
+[2/8] T3 preferences repository · RED ▶
+[2/8] T3 · RED ✓ GOOD red — `expected 1 row, got 0` (preferences_repo_test:42)
+[2/8] T3 · GREEN ✓
+[2/8] T3 · GATE ✓ unit ✓ · integration ✓ · lint ✓ · vet ✓
+[3/8] T3 · COMMIT ✓ a1b2c3d
+[3/8] T4 · GREEN ✗ retry 1/3 — `undefined: prefs.Validate`
+[3/8] T4 · ⛔ blocked — GATE — lint red after 3 retries · dependents blocked: T6
+```
+
+- **Counter** `[done/total]` — tasks committed so far / all tasks in `tasks.json` (resumed `done` tasks count).
+- **Glyphs** — `▶` step started · `✓` step passed · `✗` attempt failed (with `retry n/max_red_retries`) · `⛔` blocked · `NON` integration skipped (Docker absent).
+- **Detail** — only on RED (the quoted failing line: the proof the test is right), on a failure (its
+  first line), on COMMIT (the short SHA), and on blocked (the reason + the dependents it takes down).
+- **Wave header** — printed when a new Kahn layer starts, naming its tasks and whether they run in parallel.
+
+**Who prints** — the same single writer as the status files. Sequential: the engine, after each
+subagent returns. Team: the lead, after each handover. Workflow: stage agents can't print to the
+user, so the main session prints the wave header when the script starts a layer and one line per
+task from each `CLOSE_VERDICT` (status moves per layer in this mode — say so once in the first
+header: «progress updates per wave»).
+
+### Run summary (step 10)
+
+At the end, before the handoff block, one table — every task, final state:
+
+```
+| Task | Title                       | Status  | Commit  | unit · int · lint · vet | ACs          |
+|------|-----------------------------|---------|---------|-------------------------|--------------|
+| T1   | add preferences table       | done    | 9f1e2aa | ✓ · ✓ · ✓ · ✓           | AC-01        |
+| T3   | preferences repository      | done    | a1b2c3d | ✓ · NON · ✓ · ✓         | AC-02        |
+| T4   | update-preferences use case | blocked | —       | ✓ · — · ✗ · —           | AC-03, AC-05 |
+| T6   | PUT /preferences handler    | blocked | —       | dep T4 blocked          | AC-04        |
+
+ACs covered: 3/5 — AC-03, AC-05 open (T4 blocked) · AC-04 open (T6 blocked)
+Commits: 4 · NON-red integration: T3 (docker unreachable, require_integration=auto)
+```
+
+`✓` green · `✗` red · `NON` skipped by policy · `—` not run / not configured. An AC counts as
+covered only when **every** task listing it is `done`.

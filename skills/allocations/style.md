@@ -10,10 +10,10 @@
 > explanatory rule below is unchanged at every depth** — even a single easy-level question is glossed
 > and explained in full. Depth tunes the count; it never licenses a dry question.
 
-> **Hosts without the tool.** `AskUserQuestion` is a Claude Code mechanism. On Codex CLI and Cursor
-> its form is **numbered plain text** — the same question, the same options with the same
+> **Sessions without the tool.** When `AskUserQuestion` is unavailable in the session, its form is
+> **numbered plain text** — the same question, the same options with the same
 > descriptions, one at a time, then stop and wait for the answer
-> ([`tool-adapters.md`](./tool-adapters.md)). Everything below applies unchanged: same shape, same
+> ([`fallbacks.md`](./fallbacks.md)). Everything below applies unchanged: same shape, same
 > glosses, same four mandatory elements per option. A missing native tool is **never** a reason to
 > skip a question, answer it for the user, or block the stage.
 

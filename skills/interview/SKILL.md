@@ -6,7 +6,7 @@ agents: [researcher, devils-advocate]
 description: >
   Clarify and stress-test an engineering idea before roadmap or specification. Use for a product,
   feature, or technical change whose problem, outcome, scope, or key assumptions are unsettled:
-  "interview {slug}", "idea brief", "stress test this idea", "/sdd:interview {slug}". Reuses
+  "interview {slug}", "idea brief", "stress test this idea", "/foresdd:interview {slug}". Reuses
   existing context, adapts questions to uncertainty, checks decision-changing facts, and requests
   independent critique when risk warrants it. Returns a short brief with decisions, evidence,
   unknowns, and a justified next step. Does not implement code, design the architecture, or write
@@ -37,7 +37,10 @@ offer a general discussion; do not force it through engineering checks or overwr
 - **Headless / no human response channel: stop before any write or helper dispatch.** State what
   needs an answer. Pre-filled examples and a simulated person's choices are not actual user answers.
 - An existing brief is read first. Same idea → update only changed sections. Different idea or
-  uncertain identity → ask how it relates; do not merge or replace it silently.
+  uncertain identity → ask how it relates; do not merge or replace it silently. Ask it as one
+  choice naming the existing brief's slug and §1 gist: **Refine the existing brief** (this is the
+  same idea, evolved) / **Replace it** (the old brief stays in git history; say so) / **Keep it,
+  discuss in chat only** (no writes this run).
 - Settings are read at entry; creation is deferred to the final authorized write point below.
 
 ## Depth, questions, and evidence
@@ -45,14 +48,19 @@ offer a general discussion; do not force it through engineering checks or overwr
 Resolve the question ceiling from explicit `--depth=easy|medium|hard`, else saved
 `interview_depth`, else `medium`. No opening depth-selection question. The adaptive interview
 exception and ceilings live in [`../allocations/interview-depth.md`](../allocations/interview-depth.md).
-State the ceiling and the current reason for research/critique in one short line. Stop early
-when the decision is clear; depth never forces research or a quota of questions.
+Open with **one short orientation line** before the first question: the ceiling as a plain
+upper bound from the interview exception («medium — at most 10 questions, one at a time; often
+far fewer»), where the brief will
+land (`docs/idea-brief.md`, saved as we go — or «chat only» in no-write mode), and that saying
+**"summary"** stops the questions at any point. Add the reason for research/critique only once
+one actually applies. Stop early when the decision is clear; depth never forces research or a
+quota of questions.
 
 Ask **one substantive question at a time**, adapting to the answer. Use choices for decisions
 and open text for facts/experience; recommend a decision only when its basis is clear. The
 interview-specific exception in [`../allocations/style.md`](../allocations/style.md) overrides its
-generic long-menu requirements. Use the host's actual question channel per
-[`../allocations/tool-adapters.md`](../allocations/tool-adapters.md). Research tools cannot answer for the owner.
+generic long-menu requirements. Use the session's actual question channel per
+[`../allocations/fallbacks.md`](../allocations/fallbacks.md). Research tools cannot answer for the owner.
 
 Evidence classes: **owner-reported**, **source-verified**, **assumption**, **unknown**.
 Agreement with a recommendation is a decision, not independent evidence for its factual premises.
@@ -75,14 +83,14 @@ Never turn a hypothetical failure signal into an observed incident. Keep sources
    brief → patch the changed section in place; a different or uncertain idea is never written
    over before the owner says how it relates. No-write mode → the gates above win, nothing lands.
 3. **Check decision-changing facts.** Follow [`references/research.md`](references/research.md):
-   local evidence first, primary external sources when needed; use `sdd:researcher` in explicit
+   local evidence first, primary external sources when needed; use `foresdd:researcher` in explicit
    `fact-check` mode for a bounded gap. Inspect its evidence before relying on it. Return to step 2
    only for a new decision or contradiction, not to repeat an answered question.
 4. **Stress-test the direction.** Select fitting lenses from
    [`references/probing-frames.md`](references/probing-frames.md). Include existing contracts,
    reversibility, operational ownership, and how success/failure will be observed. Consequential
    access/data/public-contract changes, hard-to-reverse commitments, or an explicit stress-test
-   request → `sdd:devils-advocate` in explicit `interview` mode, at most three grounded findings.
+   request → `foresdd:devils-advocate` in explicit `interview` mode, at most three grounded findings.
    The helper sees the raw idea, accepted decisions, evidence and unknowns, not a persuasive
    summary. Resolve findings with the owner when they change intent or accepted risk.
 5. **Choose the next action.** Summarize the direction, strongest evidence, weakest assumption,
@@ -101,7 +109,15 @@ Never turn a hypothetical failure signal into an observed incident. Keep sources
    commit per [`../allocations/write-and-commit.md`](../allocations/write-and-commit.md): one commit
    `interview: <slug> idea-brief.md` (the `.gitignore` patch rides in it). Outside a repo / in
    Plan Mode, return the brief in the conversation, without settings, file writes, or a commit. Emit the utility stage-handoff block
-   per [`../allocations/handoff.md`](../allocations/handoff.md): **What I did**, **Review**, **Run next**.
+   per [`../allocations/handover.md`](../allocations/handover.md): **What I did**, **Review**, **Run next**.
+   **Run next follows the pipeline order** (interview → survey → roadmap → scaffold → specify),
+   picked from the outcome and what is on disk: a ready outcome with **no `docs/architecture-map.md`
+   in an empty / near-empty repo** → `/clear`, then `/foresdd:survey` (the project needs a
+   foundation before anything can be built; survey reads this brief instead of re-asking), with
+   the outcome's own command as the line after it; **`ready-for-roadmap`** → `/foresdd:roadmap`;
+   **`ready-for-specify`** → `/foresdd:specify <slug>`, adding «↳ or `/foresdd:survey` first — no
+   architecture map yet» when a brownfield repo has no map. Non-ready outcomes name the next human
+   action (the evidence check, the reframing question) instead of a command.
 
 ## Verification and Definition of Done
 

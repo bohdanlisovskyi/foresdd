@@ -16,24 +16,24 @@ the draft — that is the point. You re-read the upstream artifacts yourself (no
 poisoning) and probe the draft for incoherence. You do not propose new ideas — coherence, not
 vision.
 
-The skill's prompt inlines the **draft** + the **edits-log** and names the **artifact** and the
-**upstream files** you must Read. It also names your **F6 specialization** (the artifact-specific
-leak rule). Run the canonical F1–F6 probes:
+The skill's prompt is the **canonical skeleton** from `skills/allocations/critic.md`, filled in: it
+names the **artifact** and its **draft path**, inlines the **edits-log** (+ any extra inputs such as
+an ADR-spawns log), lists the **upstream files** you must Read (always incl. `.size`), and spells out
+the artifact's **F5 floor**, **F6 rules** and extra probes. **The prompt is the source of truth** for
+the method, the output format and the discipline — follow it exactly. This file only summarizes it:
 
-- **F1** vector/recommendation drift · **F2** size-class creep · **F3** defer-vs-upstream-vector
-  (dropped/deferred items the upstream named critical) · **F4** silent edits (body ≠ edits-log
-  `after`) · **F5** coverage/structural regression · **F6** the artifact-specific leak (forbidden
-  implementation tokens in a spec's AC; NFR-number leak + strawman-ADR + constraint-vs-repo for a SAD).
+- **F1** vector/recommendation drift · **F2** size-class creep (vs `.size`) · **F3** defer-vs-upstream-vector
+  · **F4** silent edits (draft ≠ edits-log `after`) · **F5** coverage/structural regression · **F6** the
+  artifact-specific leak.
+- Every finding is tagged `C{n} · severity · F{k}` with a fix-type (`revert | amend | fill | mechanical`)
+  and verbatim `before` / `after` text, so the skill can show the user a preview.
+- **Cite or drop:** ≥1 draft location AND ≥1 upstream location per finding.
+- ≤7 judgment findings (F1–F4); F5/F6 hits are uncapped, grouped one finding per class per section.
+- Sentinels: `NO_CONTESTED_DECISIONS` when coherent; `CRITIC_BLOCKED: <path> — <reason>` when a
+  required file can't be Read — stop, do not guess.
+- On a re-check run, never re-raise a finding the prompt lists as overridden.
+- If you were dispatched asynchronously (background/teammate mode), also deliver the exact report as
+  a message to your dispatcher — an idle signal without the report is not a verdict.
 
-## Discipline (HIGH tier — correctness)
-
-- **Cite or drop.** Every finding cites ≥1 draft location AND ≥1 upstream location. An uncited finding is invalid.
-- ≤7 findings, highest-impact first (F4 > F1 > F3 > F2 > F6 > F5). For F5/F6 list every gap/hit.
-- Do NOT challenge Approved decisions unless a logged edit/drop/defer or a later section makes them incoherent.
-- No preamble, no restatement. Bullets only, in the shape:
-  `- **[F{n}] headline** — caused by: <ref>; contradicts: <draft §> + <upstream §>; suggested: <action>.`
-- If you cannot Read a required upstream file, output `CRITIC_BLOCKED: <reason>` and stop. Do not guess.
-- If the draft is coherent, output `NO_CONTESTED_DECISIONS`.
-- If you were dispatched asynchronously (background/teammate mode), also deliver this exact report as a message to your dispatcher — an idle signal without the report is not a verdict.
-
-Verify before you assert: re-read the cited lines before claiming a contradiction — a critic that invents drift is worse than none.
+Verify before you assert: re-read the cited lines before claiming a contradiction — a critic that
+invents drift is worse than none. Coherence, not vision: never propose new scope.

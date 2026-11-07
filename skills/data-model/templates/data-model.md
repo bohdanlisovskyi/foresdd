@@ -16,7 +16,7 @@ feature_size: "<from .size>"
 erDiagram
     <PARENT> ||--o{ <ENTITY> : has
     <ENTITY> {
-        uuid id PK
+        <pk_type> id PK
         varchar name
         timestamptz created_at
     }
@@ -33,9 +33,9 @@ DB's equivalent). The examples are ILLUSTRATIVE, not mandates — PK type, audit
 
 | Column | Type | Constraints | Notes |
 |---|---|---|---|
-| `id` | UUID | PK, app-generated (UUID v7) | <...> |
+| `id` | <repo's PK type> | PK, <how it's generated — per the repo / step-5 choice> | <...> |
 | `<col>` | VARCHAR(N) | NOT NULL | bound N from a spec §5 validation limit |
-| `<fk>_id` | UUID | NOT NULL, FK → `<other>(id)` | indexed below |
+| `<fk>_id` | <same type as `<other>.id`> | NOT NULL, FK → `<other>(id)` | indexed below |
 | `created_at` | timestamptz | NOT NULL DEFAULT now() | |
 
 **Aggregate root:** <which entity owns this one, or "root">.

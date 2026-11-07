@@ -1,4 +1,4 @@
-/sdd:design rate-limit-bump --depth=easy
+/foresdd:design rate-limit-bump --depth=easy
 
 Headless eval run — there is NO interactive user; never call AskUserQuestion. Follow the design
 skill's protocol exactly as written, deciding every decision yourself with the Recommended

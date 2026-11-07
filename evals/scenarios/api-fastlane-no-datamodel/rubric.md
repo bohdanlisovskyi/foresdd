@@ -17,7 +17,7 @@ PASS requires ALL of:
    **existing schema** (e.g. an origin like «existing schema — 000002_create_feedback»),
    not to invented columns.
 4. The run's final message ends with the stage-handoff block (*What I did* / *Review* /
-   *Run next*, pointing at `/sdd:tasks delete-own-feedback`).
+   *Run next*, pointing at `/foresdd:tasks delete-own-feedback`).
 
 FAIL if the run refused or bounced to `data-model`, invented fields with no origin in any
 input, or wrote a `data-model.md` to appease the gate.

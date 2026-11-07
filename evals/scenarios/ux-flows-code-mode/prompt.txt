@@ -1,4 +1,4 @@
-/sdd:ux-flows saved-searches --depth=easy
+/foresdd:ux-flows saved-searches --depth=easy
 
 Headless eval run — there is NO interactive user; never call AskUserQuestion. Take the platform
 posture from docs/design-system.md (it is committed in the fixture) — do not deviate from it and

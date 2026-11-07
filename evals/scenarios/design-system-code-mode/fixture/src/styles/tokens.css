@@ -1,0 +1,28 @@
+/* Design tokens — the ONLY place colors / spacing / type are declared. Components use var(--…). */
+:root {
+  --color-primary: #2f5bea;
+  --color-primary-hover: #2449c4;
+  --color-surface: #ffffff;
+  --color-text: #1b1f29;
+  --color-muted: #6b7280;
+  --color-danger: #c62828;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+
+  --font-family: "Inter", system-ui, sans-serif;
+  --font-size-sm: 13px;
+  --font-size-md: 15px;
+  --font-size-lg: 20px;
+  --radius-md: 6px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-surface: #12151c;
+    --color-text: #e6e8ee;
+  }
+}

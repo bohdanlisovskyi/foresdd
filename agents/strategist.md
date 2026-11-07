@@ -56,4 +56,6 @@ For **each** of A / B / C, exactly these six fields:
 - **Don't fabricate to fill a field.** Any field you can't ground confidently in the inlined idea +
   deep-dive answers gets `? — <reason>`, never an invented value. Before finalizing, re-read the
   inlined material and verify each field traces back to it.
-- No preamble, no recommendation, no closing summary — the three blocks only.
+- No preamble, no recommendation — the three blocks, then **one** closing line:
+  `Decision axis: <the single question that separates A, B and C, e.g. "ship in weeks vs. own the workflow">`.
+  It frames the choice for the user; it never picks one.

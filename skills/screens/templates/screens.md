@@ -1,7 +1,8 @@
 ---
 status: draft            # draft | approved
 feature_size: "<XS|S|M|L|XL — mirror of .size>"
-tool: "<figma | pencil | code — copied from docs/design-system.md frontmatter at generation>"
+tool: "<figma | pencil | code — the mode ACTUALLY used: the docs/design-system.md tool, or code when its MCP was unavailable>"
+degraded_from: ""        # the canon's tool when this run fell back to code (e.g. pencil); else ""
 updated_at: "<YYYY-MM-DD>"
 ---
 
@@ -18,7 +19,8 @@ updated_at: "<YYYY-MM-DD>"
      pencil → docs/features/<slug>/screens.pen; code → the wireframes are inline below. Note a
      degradation here if the chosen tool's MCP was unavailable and the run fell back to code. -->
 
-- **Tool:** <figma | pencil | code> (from `docs/design-system.md`)
+- **Tool:** <figma | pencil | code> (from `docs/design-system.md`) — or «code (degraded from
+  <pencil|figma>: its MCP was unavailable in this session)»
 - **File:** <Figma file URL / `screens.pen` / «inline wireframes below»>
 
 ## Screens
@@ -39,6 +41,10 @@ updated_at: "<YYYY-MM-DD>"
 | loading | <…> | <Skeleton> | <…> |
 | empty | <…> | <EmptyState> | <…> |
 | error | <contract error / AC it shows> | <ErrorBanner> | <…> |
+
+<!-- instruction (code mode): ≤40 chars wide, ≤16 lines, plain ASCII (+ - |) — it doubles as the
+     AskUserQuestion preview. One block per state with a DISTINCT layout; a state that only swaps a
+     component is a table row, not a new block. -->
 
 ```text
 +--------------------------------------+

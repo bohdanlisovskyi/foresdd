@@ -8,7 +8,7 @@ The 12 Arc42 sections of `sad.md`, in order:
 
 §1 Introduction & goals → §2 Constraints → §3 Context & scope (C4 Context inline) → §4 Solution strategy → §5 Building blocks (C4 Container inline) → §6 Runtime → §7 Deployment → §8 Crosscutting → §9 Architecture decisions → §10 Quality requirements → §11 Risks → §12 Glossary.
 
-§4 opens with the **Target-surface** decision (it gates §5's containers + every downstream stage, so it's resolved before any other §4 choice — see the decision-types catalog below). Each resolved section (`sad.md` edits + any ADR files the gate spawned) is written to disk immediately, with no commit; at the end of the step `sad.md` gets one commit and every ADR its own (spine step 7). The skill never returns to a written section — cross-section drift is the critic's job. Section depth follows the size matrix; even XS/S walks all 12 (more `<!-- N/A: reason -->`, see [`../../allocations/size-matrix.md`](../../allocations/size-matrix.md)).
+§4 opens with the **Target-surface** decision (it gates §5's containers + every downstream stage, so it's resolved before any other §4 choice — see the decision-types catalog below). Each resolved section (`sad.md` edits + any ADR files the gate spawned) is written to disk immediately, with no commit; at the end of the step `sad.md` gets one commit and every ADR its own (spine step 7). The skill never returns to a written section — cross-section drift is the critic's job. Section depth follows the T-shirt sizing matrix; even XS/S walks all 12 (more `<!-- N/A: reason -->`, see [`../../allocations/tshirt-sizing.md`](../../allocations/tshirt-sizing.md)).
 
 ## Decision-types catalog
 
@@ -25,15 +25,15 @@ Each section holds a mix of these; the same 4-state machine applies to all. The 
 
 ## Per-skill gate — the blast-radius gate (→ ADR)
 
-This is design's equivalent of specify's coverage floor. On every **Approved** decision (not Edit/Drop/Save-as-OQ), run the 3-criteria blast-radius gate → [`./blast-radius.md`](./blast-radius.md): irreversible / multi-module / has legitimate alternatives. **2-of-3 fires → spawn an ADR**; on a 1-of-3 borderline, ask explicitly «Lock as ADR or inline?». An ADR spawn:
+This is design's equivalent of specify's coverage floor. On every **Approved** decision (not Edit/Drop/Save-as-OQ), run the 3-criteria blast-radius gate → [`./blast-radius.md`](./blast-radius.md): irreversible / multi-module / has legitimate alternatives. **2-of-3 fires → spawn an ADR**; on a 1-of-3 borderline, ask explicitly «Record as ADR or keep inline?» (shape → [`./ask-examples.md`](./ask-examples.md)). An ADR spawn:
 
-1. `NNNN` = `ls docs/features/<slug>/adr/*.md 2>/dev/null | wc -l` + 1, zero-padded to 4 digits.
+1. `NNNN` = the highest existing `NNNN` in `docs/features/<slug>/adr/` + 1 (none → `0001`), zero-padded to 4 digits — **not** a file count: a gap or a superseded/removed file must never cause a number to be reused.
 2. Title in **decision-form** imperative kebab-case from the chosen option, not the problem (`0003-sliding-window-counter.md` ✓ vs `0003-rate-limiting.md` ✗).
 3. Copy [`../templates/adr.md`](../templates/adr.md) → `docs/features/<slug>/adr/NNNN-<title>.md`. Status = `Accepted` (this skill is synchronous); Considered options include the rejected ones from the `AskUserQuestion`; no strawman options (an alternative an existing constraint already excludes).
 4. Add a §9 row: `| NNNN | <imperative title> | Accepted | §N |`, written with the section. The ADR file gets its **own commit** at the end of the step, separate from `sad.md`.
 5. Append to an in-memory ADR-spawns log (`{adr_id, title, section, triggered_by}`), kept **adjacent** to the edits-log — different signal (new artifact, not a user edit). The critic reads `adr/` directly; the spawns log is in-memory traceability only.
 
-Expected ADR count by size: XS/S → 2–4, M → 5–12, L/XL → 10–15.
+Expected ADR count by size (typical, not a quota — the gate decides): XS → 0–2, S → 1–4, M → 5–12, L/XL → 10–15.
 
 ## Open-Questions table
 

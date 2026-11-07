@@ -8,7 +8,19 @@ when this runs.
 
 ## `api-sync-report.md` shape
 
-Written to `docs/features/<slug>/contracts/api-sync-report.md` next to the YAML. Two sections.
+Written to `docs/features/<slug>/contracts/api-sync-report.md` next to the YAML. Three sections.
+
+### Section 0 — conventions used
+
+One row per convention from the [conventions table](#conventions--follow-the-repo-default-on-greenfield), with where it came from, so a reviewer sees at a glance whether the contract matches the rest of the repo:
+
+```
+| convention   | value                              | source                                             |
+|--------------|------------------------------------|----------------------------------------------------|
+| pagination   | offset (?page=&per_page=)          | repo — docs/features/orders/contracts/openapi.yaml |
+| error shape  | {code, message, details?}          | greenfield default                                 |
+| auth         | session cookie                     | ADR-0004                                           |
+```
 
 ### Section A — field-origins table
 
@@ -64,17 +76,21 @@ Each point is ✓ or ✗ with a one-line diagnostic on ✗.
 A **core** point (1–3) failing — or **≥3 flags** of any kind in one run — pauses the run and is
 surfaced to the user before writing. **Supporting** point (4) failing becomes a follow-up note in
 the report. Resolve each finding via the shared 4-state actions
-([`../../allocations/style.md`](../../allocations/style.md)):
+([`../../allocations/style.md`](../../allocations/style.md)) — the same four labels the spine uses:
 
 - **Accept as is** — record the mismatch as accepted (e.g. an intentionally internal entity with
   no endpoint), move on.
 - **Fix the contract** — regenerate the affected operation/schema to match the source.
-- **Save as Open Question** — park it with owner + due; the field/endpoint stays with a
-  `# unresolved` note until answered.
-- **Fix the source first** — STOP; the contract waits for the user to correct `data-model.md` /
-  the sequence (this skill never edits sources). On a legal fast-lane skip the "source" is the
-  existing schema — a mismatch there usually means the skip was NOT legal after all (the feature
-  needs a column that doesn't exist): route it to `data-model <slug>`, not to a schema hand-edit.
+- **Save as open question** — park it with owner + due; the field/endpoint stays with a
+  `# unresolved` note until answered. When the fix belongs **upstream** (a missing AC, a missing
+  §6 branch, a wrong `data-model.md` constraint), the owner is the **producing stage**
+  (`specify` / `sequences` / `data-model`) and the due is «before the contract is finalized» —
+  this skill never edits sources. On a legal fast-lane skip the "source" is the existing schema —
+  a mismatch there usually means the skip was NOT legal after all (the feature needs a column that
+  doesn't exist): the owner is `data-model <slug>`, never a schema hand-edit.
+- **Drop** — remove the offending operation/field from the contract (e.g. an endpoint no user
+  story asks for). Not available for a finding that is the only coverage of a §5 AC — re-ask once
+  per the shared loop.
 
 ## Reconcile semantics (`--reconcile`)
 
@@ -107,14 +123,23 @@ flag — it means a schema change exists and the skip was illegal → stop and r
 
 If ≥3 flags appear in one run, pause, list them, and ask whether to continue or fix the sources first.
 
-## Defaults (deviation by ADR only)
+## Conventions — follow the repo, default on greenfield
 
-A fixed minimum, not invented per feature; an `adr/*.md` overrides any of them and the report
-records "deviation by ADR-NNNN".
+Each convention resolves in this order (spine step 1d): an Accepted **ADR** → the **repo's existing
+contracts** (other features' `contracts/openapi.yaml`, a root OpenAPI/proto, real handler responses)
++ `architecture-map.md` §Conventions → the **greenfield default** below. The source of each lands
+in report Section 0. Diverging from an existing repo convention on purpose needs an ADR.
+
+| Convention | Greenfield default |
+|---|---|
+| Error envelope + code naming | `{code, message, details?}`, `code` = neutral `module.error_name` snake_case |
+| Pagination | **Cursor** (`?after=&before=&limit=`) wrapped in `{items, has_next, has_prev, next_cursor}` |
+| Versioning | **URL** (`/api/v1/...`) |
+| Auth scheme | **BearerAuth** global; a public endpoint declares explicit `security: []` |
+| Id format | whatever PK `data-model.md` chose (never a hard-coded `uuid`) |
+
+**Fixed regardless of repo** (contract correctness, not style):
 
 - OpenAPI **3.1.0** — nullability via `type: [string, null]`, never `nullable: true` (3.0 style).
-- Error envelope **`{code, message, details?}`**, `code` = neutral `module.error_name` snake_case.
-- **Cursor** pagination (`?after=&before=&limit=`) wrapped in `{items, has_next, has_prev, next_cursor}` — never offset.
-- **URL** versioning (`/api/v1/...`) — never a `?v=2` query param.
-- **BearerAuth** global; a public endpoint declares explicit `security: []`.
+- **One** error envelope across every operation — whatever its shape, never free text.
 - `$ref` mandatory for shared schemas; placeholder data only in `example` blocks (no real PII).
