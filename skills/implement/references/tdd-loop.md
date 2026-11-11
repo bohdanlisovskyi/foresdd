@@ -23,6 +23,10 @@ Pick the next task whose `deps` are all `done` — `done` as recorded on disk (`
 
 4. **Quote the failing line** (the assertion + expected-vs-actual, or the «undefined: X» line) before writing any production code. This is the proof that the test exercises the right thing.
 
+### Characterization tasks — the one inverted case
+
+A task whose `acs` are all area-qualified (`orders:AC-02`, from an `extends` baseline — see [`../../tasks/SKILL.md`](../../tasks/SKILL.md) step 4) pins **existing** behaviour, so the expected first run is **green**, not red. Classify it as **GOOD pin** (green, and the assertion encodes the baseline AC's outcome — prove it by temporarily breaking the anchored code line or the expected value and watching it fail, then restore) or **baseline mismatch** (red: the code does not do what the baseline says). A mismatch means the baseline is wrong or the code drifted since it was captured — **stop the task and ask** (fix the baseline AC via `/foresdd:fix <area>`, or correct the test's reading); never edit production code inside a characterization task. On GOOD pin there is no GREEN step; REFACTOR → GATE → COMMIT as usual, and the baseline's §9 «Pinned by» cell is filled with the new test.
+
 A task with only a NON-red integration test and no unit coverage cannot be driven by TDD locally — write the unit-level RED too, and let the integration RED land in CI (the proving-run pattern).
 
 ## GREEN — minimal code to pass

@@ -2,7 +2,7 @@
 name: specify
 model: inherit
 effort: high
-agents: [critic, researcher, strategist, analyst, devils-advocate]
+agents: [critic, researcher, strategist, analyst, devils-advocate, explorer]
 description: >
   Use to turn a raw feature idea into a reviewed spec.md — a lightweight Socratic interview front
   (capture the idea, deep-dive the problem) merged with a full product spec (context, goals, user
@@ -13,6 +13,10 @@ description: >
   Socratically, runs a clean-context critic, then writes docs/features/{slug}/spec.md. The ideation
   analyses (competitive research, strategic approaches, multi-perspective review, devil's-advocate)
   run as named subagents gated by the depth dial — easy skips them, hard runs the full suite.
+  Baseline mode ("baseline {area}", "spec the existing {area}", "/foresdd:specify {area}
+  --baseline") instead captures what EXISTING code already does as an owner-confirmed spec
+  (kind: baseline, observed ACs with code evidence) so a later change in a pre-SDD area has
+  something to be a delta against.
 ---
 
 # Skill: specify
@@ -30,7 +34,8 @@ PM + Tech Lead (co-authors). PM drives goals / non-goals / KPIs; Tech Lead drive
 
 ## Inputs
 
-- `<slug>` — kebab-case feature slug.
+- `<slug>` — kebab-case feature slug (in baseline mode: the **area** slug, e.g. `orders`).
+- `--baseline` — optional; run [baseline mode](#baseline-mode--specifying-code-that-already-exists).
 - (Optional) `CONTEXT.md` — the two-level glossary: read **both** repo-root (project-wide) and `docs/features/<slug>/CONTEXT.md` (feature-scoped); per-feature wins on conflict → [`../glossary/SKILL.md`](../glossary/SKILL.md). If present, its roles/terms are canonical and override anything that contradicts them.
 - `docs/features/<slug>/.size` + `.route` — **read if present; established here if absent** (step 1 classifies + writes them), so downstream stages never silently default to M. `tshirt-size` re-classifies when scope changes.
 - `docs/features/<slug>/.depth` — reused if present (normally written by this skill's step 1).
@@ -38,6 +43,16 @@ PM + Tech Lead (co-authors). PM drives goals / non-goals / KPIs; Tech Lead drive
   follow [`./references/brief-reuse.md`](./references/brief-reuse.md). A brief is not mandatory.
 - (Optional) `docs/architecture-map.md` (from `survey`) — makes the spec architecture-aware.
 - (Optional) prior notes / a reference module / a ticket the user already has.
+
+## Baseline mode — specifying code that already exists
+
+For a repo that adopted foresdd mid-life. A change about to land in an area that was built before foresdd has no spec to be a delta against, so `fix` can't call a bug a regression and `review` can't check the old behaviour survived. Baseline mode records what the code does **today** as `docs/features/<area>/spec.md` with `kind: baseline` — every §5 AC **observed** (backed by a `file:line` in §9 Evidence) and confirmed by the owner as Intended / Known defect / Not sure. It is lazy: one area, right before the first change touches it.
+
+- **Entry:** `--baseline`, a baseline trigger phrase, or the step-1a offer below.
+- **Protocol:** five phases (Capture & calibrate → Scan → Draft → Owner confirm → Critic & commit) instead of seven — no ideation, no size/route, no 5-coverage-type floor (a missing type becomes a §8 finding about the code, never an invented AC). Template [`./templates/spec-baseline.md`](./templates/spec-baseline.md); full detail → [`./references/baseline.md`](./references/baseline.md).
+- **After:** the change gets its own slug; its spec carries `extends: <area>` and writes only the delta. `design`, `tasks` and `implement` refuse a `kind: baseline` spec.
+
+The rest of this file describes the normal (new-feature) run.
 
 ## The run at a glance — the phase map
 
@@ -65,6 +80,7 @@ The user always sees where they are. specify runs **seven phases**; the numbers 
 1. **Capture & calibrate.** Steps 1a–1d, in order. The idea comes **before** any calibration question, so depth, size and route are proposed *from* it instead of guessed blind.
 
    - **1a — Setup (no questions).** **Ensure the settings file (first thing, after this skill's own gate).** If `.claude/sdd.local.md` is absent, create it from the canonical template and patch `.gitignore`; if it exists, read it and never overwrite → [`../allocations/settings-file.md`](../allocations/settings-file.md) (creating is unconditional; **changing values is only ever offered by [`config`](../config/SKILL.md)**; say the canon's one-line creation notice only when the file was just created). Load `## Glossary` from **both** `CONTEXT.md` levels as session state (per-feature wins). If `docs/architecture-map.md` exists, read it — it informs §1 Context, §2 Goals and §3 Non-goals (what the existing system already does / can't do); absent → note «no architecture map — `survey` would make the spec architecture-aware» for the handoff and proceed. **Do not leak the map's tech into §5 AC.** Read any existing `.depth` / `.size` / `.route`.
+     **Pre-SDD area? (brownfield, no `--baseline`).** If the idea is a change to an existing capability (the map's module inventory or a quick grep shows the code it changes) and **no** `docs/features/*/spec.md` owns that area, ONE `AskUserQuestion`: **Capture the baseline first** (run baseline mode for `<area>` now; this change spec follows in the next run with `extends: <area>`) · **Spec only the change** (proceed; the handoff notes that no baseline exists) · **Stop**. «(Recommended)» goes on Capture-first when the change **alters** existing rules, on Spec-only when it is a pure addition that leaves today's behaviour alone; the recommended option is listed first. When a baseline for the area exists (`kind: baseline`), set `extends: <area>` in the frontmatter, read its §4/§5 as the current behaviour, and draft only the delta — an altered AC names the baseline AC it supersedes ([`./references/baseline.md`](./references/baseline.md) §How downstream stages use a baseline).
      **Existing spec?** If `docs/features/<slug>/spec.md` already exists, never overwrite it silently. Uncommitted changes → the **Resume / Restart** question from [`../allocations/write-and-commit.md`](../allocations/write-and-commit.md) §1. Committed and clean → ONE question: **Revise this spec** (load it as the baseline; later phases walk only what the user wants changed, and filled sections count as resolved) · **Restart from the template** (the old version stays in git history) · **Stop — sharpen it with clarify instead** (emit the handoff naming `/foresdd:clarify <slug>`; nothing written).
    - **1b — Capture the idea.** Apply [`./references/brief-reuse.md`](./references/brief-reuse.md) first: a usable `docs/idea-brief.md` supplies the idea, problem, actors and accepted decisions. Otherwise reuse the user's own words when the invocation already carries the idea — never ask them to repeat it. Only when there is no idea at all, ask for it in plain text, in 1–3 sentences (an open question, not a menu). Echo the captured baseline back in one line so the user can correct it before anything is built on it.
    - **1c — Calibrate (ONE `AskUserQuestion` call, ≤2 questions).** Infer the four size signals from the idea per [`../tshirt-size/SKILL.md`](../tshirt-size/SKILL.md) step 2 (≤10-word evidence note each; *unknown* rather than a guess). Then bundle whatever is still unresolved into one call, each question phrased per [`../allocations/style.md`](../allocations/style.md):
@@ -104,6 +120,8 @@ The user always sees where they are. specify runs **seven phases**; the numbers 
 
 - **Calibrating before the idea is known.** Asking depth or size before the user has said what the feature is forces a blind guess; capture first (step 1b), then propose.
 - **Silent progress.** Long stretches of questions or subagent waits with no banner, marker or «nothing needed from you» line — the user can't tell how much is left or whether the run is stuck.
+- **Inventing behaviour in a baseline.** An observed AC without a code anchor, an AC added to satisfy a coverage type the code lacks, or a target the code never set — a baseline is evidence, not aspiration.
+- **Back-filling every area up front.** Baselines are captured lazily, per area, when a change is about to touch it.
 - **Overwriting an existing spec.** A re-run that re-bootstraps over a committed or in-progress `spec.md` without the Resume / Revise / Restart question.
 - **Filler to hit a count.** Invented open questions, generic non-goals, an NFR row for a latency nobody will measure, user stories for glossary roles the feature never touches. Size-scaled guidance is a range, not a quota; the coverage floors are the only hard minimums.
 - **Inventing owner answers.** Reuse confirmed brief/conversation answers; ask about missing consequential decisions. Repeating a settled interview is not required, and headless execution does not license new guesses.
@@ -115,6 +133,8 @@ The user always sees where they are. specify runs **seven phases**; the numbers 
 
 ## References & template
 
+- [`./references/baseline.md`](./references/baseline.md) — baseline mode: scan, observed-AC contract, owner confirm, relaxed floors, critic delta, downstream use.
+- [`./templates/spec-baseline.md`](./templates/spec-baseline.md) — baseline output scaffold (`kind: baseline`, §9 Evidence).
 - [`./references/brief-reuse.md`](./references/brief-reuse.md) — reusing `docs/idea-brief.md`: identity, readiness, what to reuse, ideation reuse.
 - [`./references/ideation.md`](./references/ideation.md) — depth-gated ideation orchestration: which named subagent (`researcher` / `strategist` / `analyst` / `devils-advocate`) runs at which level, what each returns, how outputs feed the spec.
 - [`../allocations/interview-depth.md`](../allocations/interview-depth.md) — the easy/medium/hard dial resolved in step 1c (question volume, autonomy, which analyses run).

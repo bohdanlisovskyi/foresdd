@@ -4,6 +4,7 @@ owner: "<feature owner>"
 reviewers: ["Tech Lead"]  # + "Security Lead" when §6.1 Security review = Required (set in specify step 7)
 updated_at: "<today YYYY-MM-DD>"
 feature_size: "<from .size: XS/S/M/L/XL>"
+extends: ""  # area slug of a `kind: baseline` spec this change builds on (brownfield); "" otherwise
 ---
 
 # Spec — <slug>

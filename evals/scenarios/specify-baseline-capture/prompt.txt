@@ -1,0 +1,14 @@
+/foresdd:specify orders --baseline --depth=easy
+
+Headless eval run — there is NO interactive user; never call AskUserQuestion. This is an existing
+Go service that never used foresdd; `docs/architecture-map.md` is current (treat `reflects_commit`
+as the fixture's baseline commit). The owner wants to add order cancellation soon (change slug
+`orders-cancel`) and first needs a baseline of what the orders area does today.
+
+The owner's confirm answers are given here in advance: every observed rule is «Intended». For
+anything else the protocol would normally ask, take the reversible default and say so in the
+handoff. Skip any subagent dispatch that is unavailable and scan inline instead, noting the gap.
+
+Follow the skill's baseline-mode protocol: scan the orders area, write
+docs/features/orders/spec.md from the baseline template with observed ACs and the §9 Evidence
+table, run the critic, commit, and finish by printing the stage-handoff block.

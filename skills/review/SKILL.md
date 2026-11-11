@@ -28,6 +28,7 @@ Tech Lead / a reviewer who did **not** write the code (independence is the point
 - `--delta` — optional; re-review only the surface changed since the latest `_review/review-*.md` (auto-selected when that record says `CHANGES REQUESTED` — see step 1).
 - **Gate (hard refuse):** an implemented change must exist (commits on the feature branch, or a non-empty working diff). Nothing to review → «run `implement <slug>` first».
 - Read for the review baseline — the **whole AC chain**, so the trace can be checked end-to-end: `docs/features/<slug>/spec.md` §5 (the full AC set — the source of truth, not the diff's trailers), `sad.md` §6 (the sequence flows/branches each AC should appear in), `data-model.md` / `contracts/openapi.yaml` / Accepted `adr/` (the contracts the code must honour), `test-plan.md` (the AC→test map, if a separate file), and `tasks.json` (which AC each task claimed).
+- When `spec.md` frontmatter has `extends: <area>`: `docs/features/<area>/spec.md` — the baseline. Stage 1 also checks that every baseline AC **not** named in a change AC's `supersedes` still holds in the touched code (its §9 anchor is the starting point); a silent change to observed behaviour is a stage-1 finding.
 - `docs/features/<slug>/.route` (missing → `standard`, say so) — decides which links of the chain are legitimately absent; see step 1.
 
 ## Protocol

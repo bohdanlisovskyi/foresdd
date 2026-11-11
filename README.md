@@ -14,6 +14,7 @@ its own artifact, commits it, and prints the exact command to run next.
 - [How to configure](#how-to-configure)
 - [How to run (first run)](#how-to-run-first-run)
 - Recipes:
+  [adopt foresdd in an existing repo](#adopt-foresdd-in-an-existing-repo) ·
   [new backend feature](#new-backend-feature) ·
   [update an existing backend feature](#update-an-existing-backend-feature) ·
   [UI feature](#ui-feature) ·
@@ -246,6 +247,7 @@ a kebab-case **feature slug** you make up once (here `checkout-discounts`). It b
 
 # ── per feature ────────────────────────────────────────────────────────────────────────────
 /foresdd:specify        checkout-discounts     # interview → spec (reads the architecture map)
+/foresdd:specify        checkout --baseline    # existing repo: capture what an area does today first
 /foresdd:clarify        checkout-discounts     # optional: ambiguity sweep
 /foresdd:ux-flows       checkout-discounts     # UI features only: user flows + screen inventory
 /foresdd:design         checkout-discounts     # sad.md + ADRs
@@ -280,7 +282,8 @@ Run these once per repository. Then follow the [recipe](#new-backend-feature) th
   the datastores, the frontend if there is one, and the build/test/lint commands. It summarises the
   map in prose and asks you to confirm before committing. Later stages read this map instead of
   re-scanning. Re-run `survey` when the code has moved on, and it updates only the parts that
-  changed.
+  changed. See [Adopt foresdd in an existing repo](#adopt-foresdd-in-an-existing-repo) for the
+  whole onboarding path.
 - **Empty repository:** `survey` runs a short foundation session. You choose the stack, folder
   structure, data approach and conventions together, and it records those choices as foundational
   ADRs. Then build the skeleton:
@@ -316,6 +319,65 @@ source, and records the component inventory that new screens reuse.
 The recipes below show the complete sequence of commands. In practice you don't need to remember
 them: each stage's handoff names the next command, and on a `quick` route the stages that don't
 apply are skipped for you.
+
+### Adopt foresdd in an existing repo
+
+Example: a service that has been in production for two years, has tests and migrations, and has
+never seen a spec. You don't need to write specs for what already exists before you start. foresdd
+learns the codebase once, and then captures an area's current behaviour only when a change is about
+to touch it.
+
+**1. Map the codebase once** (no `scaffold`, which is only for empty repos):
+
+```text
+/foresdd:survey
+```
+
+`survey` detects the existing code and writes `docs/architecture-map.md`: modules, conventions with
+`file:line` evidence, datastores and the build/test/lint/migration commands. If you already have an
+`ARCHITECTURE.md`, a root `CLAUDE.md` or ADRs, it reads and reconciles them and never overwrites
+them. Check the prose summary before it commits, because the scan can misread intent, such as a
+module that is being phased out.
+
+**2. (Optional) Settings and design canon:** `/foresdd:config`, and `/foresdd:design-system` if the
+product has a UI. The design canon records the components you already have, so new screens reuse
+them.
+
+**3. Pick the path for each piece of work.**
+
+- **Brand-new capability** that leaves existing behaviour alone: follow
+  [New backend feature](#new-backend-feature) or [UI feature](#ui-feature). `design` builds on the
+  map, `data-model --mode brownfield` writes only delta migrations, and `api` follows your existing
+  contract conventions.
+- **Change to an area that has no spec yet** (for example, adding cancellation to the `orders`
+  module): capture the baseline first, then spec the change.
+
+  ```text
+  /foresdd:specify orders --baseline          # what orders does today, confirmed by you
+  /foresdd:specify orders-cancel              # the change; its spec gets `extends: orders`
+  ```
+
+  The baseline scans the code and writes `docs/features/orders/spec.md` with `kind: baseline`. Every
+  acceptance criterion in it is *observed*: a `file:line` and, if one exists, the test that pins it
+  back each one. You confirm each AC as **Intended**, **Known defect** or **Not sure**. A missing
+  check, such as no authorization rule, is recorded as a finding and is never invented as an AC.
+  The baseline plans no work, so `design` and `tasks` refuse it. It is the reference that the
+  change is measured against:
+  - the change spec writes only the delta, and any AC that alters old behaviour names the baseline
+    AC it `supersedes`;
+  - `tasks` adds a **characterization test** first for each *unpinned* baseline rule in the code the
+    change touches, so today's behaviour is pinned before anything moves;
+  - `review` flags any baseline AC that changed without being superseded;
+  - `fix` can now call a broken baseline AC a **regression**, and a *known-defect* AC a spec-bug.
+
+  `specify` offers this baseline step on its own when it sees that a change targets code with no
+  spec. For a small, isolated addition you can choose **Spec only the change** instead.
+- **Bug in code with no spec:** `/foresdd:fix <area> <symptom>` works without any specs. It pins the
+  bug with a failing test, fixes it and writes a fix record. If the same area keeps producing bugs,
+  capture its baseline.
+
+**4. Keep the map fresh.** Re-run `/foresdd:survey` when the code has moved on. It records the
+commit it reflects and re-scans only the modules that changed.
 
 ### New backend feature
 

@@ -64,6 +64,17 @@ construction** — it's evidence the spec already missed this case once — so t
 `implement` pass verifies it at least as strictly as the rest, with the pinning test that caught
 the bug as the minimum baseline, never the whole proof.
 
+## Baseline specs
+
+A `kind: baseline` spec (from `specify --baseline`) is found by the same grep and triaged by the
+same table — its §5 ACs record what the code did when it was surveyed, confirmed by the owner. Two
+specifics:
+
+- an AC marked `<!-- known-defect: … -->` is **(b) spec-bug** by definition: the fix makes the
+  code meet the owner's stated expectation, rewrites the AC to that expectation, and removes the
+  marker (and its §8 row) in the same spec patch;
+- the RED test for a baseline AC that §9 lists as `unpinned` also fills that row's «Pinned by».
+
 ## No-spec mode (brownfield soft gate)
 
 Two ways in: `docs/features/` doesn't exist at all, or it exists but no spec plausibly owns the
@@ -72,7 +83,8 @@ symptom (the bug lives in pre-SDD code). Either way:
 - run intake → RED → GREEN → gate → record as usual;
 - the record's triage field is `no-spec`, and its «Spec patch» section states why;
 - the handoff recommends `/foresdd:survey` (map the codebase so future fixes have something to trace
-  to) — a recommendation, never a blocker.
+  to) and, when the same area keeps producing bugs, `/foresdd:specify <area> --baseline` — both
+  recommendations, never blockers.
 
 Hard-refusing here would lock out exactly the user this skill serves first: someone with a bug
 in a repo that never ran the backbone.
